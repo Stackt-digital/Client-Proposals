@@ -185,6 +185,61 @@ export default function FurnwareProposal({
         50%  { transform: translateY(0%); }
         100% { transform: translateY(100%); }
       }
+
+      /* ── Slogan ── */
+      .fp-slogan {
+        position: relative;
+        width: 100%;
+        min-height: 65vh;
+        background: var(--charcoal);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+
+      .fp-slogan-body {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: 120px 80px;
+      }
+
+      .fp-slogan-text {
+        font-size: clamp(48px, 7vw, 108px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        margin: 0;
+      }
+
+      .fp-slogan-text .fp-slogan-bold {
+        display: block;
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .fp-slogan-text .fp-slogan-light {
+        display: block;
+        font-weight: 300;
+        color: var(--primary);
+      }
+
+      .fp-slogan-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 80px;
+        border-top: 1px solid var(--mid);
+      }
+
+      .fp-slogan-footer-left,
+      .fp-slogan-footer-right {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 200;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: var(--tertiary);
+      }
     `
     document.head.appendChild(style)
 
@@ -265,11 +320,28 @@ export default function FurnwareProposal({
     </section>
   )
 
+  const Slogan = () => (
+    <section className="fp-slogan">
+      <div className="fp-slogan-body">
+        <h2 className="fp-slogan-text reveal">
+          <span className="fp-slogan-bold">The value stack</span>
+          <span className="fp-slogan-light">concept.</span>
+        </h2>
+      </div>
+
+      <footer className="fp-slogan-footer">
+        <span className="fp-slogan-footer-left">Stackt</span>
+        <span className="fp-slogan-footer-right">02</span>
+      </footer>
+    </section>
+  )
+
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div ref={rootRef}>
       <div id="fp-progress-bar" className="fp-progress-bar" />
       <Cover />
+      <Slogan />
     </div>
   )
 }
