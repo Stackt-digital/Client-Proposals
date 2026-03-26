@@ -1,10 +1,12 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 
 export default function FurnwareProposal({
   clientName = "Furnware",
   contactEmail = "lauren@stackt.digital",
   selectedTier = "Amplify",
 }) {
+  const rootRef = useRef(null)
+
   useEffect(() => {
     const fontLink = document.createElement("link")
     fontLink.rel = "stylesheet"
@@ -24,6 +26,17 @@ export default function FurnwareProposal({
         --secondary: #a9a9b1;
         --primary: #f0f0f2;
       }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
     `
     document.head.appendChild(style)
 
@@ -33,5 +46,26 @@ export default function FurnwareProposal({
     }
   }, [])
 
-  return <div />
+  useEffect(() => {
+    if (!rootRef.current) return
+
+    const elements = rootRef.current.querySelectorAll(".reveal")
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible")
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    elements.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [])
+
+  return <div ref={rootRef} />
 }
