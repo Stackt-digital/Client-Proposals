@@ -765,6 +765,130 @@ export default function FurnwareProposal({
         letter-spacing: 0.1em;
         color: rgba(38, 38, 38, 0.35);
       }
+
+      /* ── Team ── */
+      .fp-team {
+        background: var(--charcoal);
+        padding: 130px 80px 100px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+
+      .fp-team-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 200;
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--tertiary);
+        margin-bottom: 56px;
+        display: block;
+      }
+
+      .fp-team-heading {
+        font-size: clamp(32px, 4vw, 56px);
+        font-weight: 300;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+        color: var(--primary);
+        max-width: 820px;
+        margin: 0;
+      }
+
+      .fp-team-heading strong {
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .fp-team-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 64px;
+        margin-top: 72px;
+        align-items: start;
+      }
+
+      .fp-team-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        background: var(--mid);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      .fp-team-card {
+        background: #242424;
+        padding: 36px 40px;
+        border-left: 2px solid transparent;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .fp-team-card:hover {
+        border-color: var(--sky);
+        background: #282828;
+      }
+
+      .fp-team-card-name {
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--primary);
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .fp-team-card-role {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 200;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--sky);
+        margin-bottom: 16px;
+        display: block;
+      }
+
+      .fp-team-card-desc {
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 1.6;
+        color: var(--secondary);
+        margin: 0;
+      }
+
+      .fp-team-photo-col {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .fp-team-photo {
+        width: 100%;
+        min-height: 480px;
+        object-fit: cover;
+        filter: grayscale(100%);
+        opacity: 0.8;
+        display: block;
+        background: var(--mid);
+      }
+
+      .fp-team-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        margin-top: 80px;
+        border-top: 1px solid var(--mid);
+      }
+
+      .fp-team-footer-left,
+      .fp-team-footer-right {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 200;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: var(--tertiary);
+      }
     `
     document.head.appendChild(style)
 
@@ -1161,6 +1285,59 @@ export default function FurnwareProposal({
     </section>
   )
 
+  const Team = () => (
+    <section className="fp-team">
+      <span className="fp-team-label">Your team</span>
+
+      <h2 className="fp-team-heading reveal">
+        Proven people.{" "}
+        <strong>Senior oversight. No juniors learning on your budget.</strong>
+      </h2>
+
+      <div className="fp-team-grid">
+        <div className="fp-team-cards reveal">
+          {[
+            {
+              name: "Ash",
+              role: "Strategy",
+              desc: "Your strategic lead. Ash brings over a decade of agency experience and is accountable for the direction, quality and output of your stack.",
+            },
+            {
+              name: "Lauren",
+              role: "Business Director and AI Enablement Lead — Primary Contact",
+              desc: "Senior oversight across all client accounts. Lauren ensures consistency, quality control and that every deliverable is held to the standard it should be.",
+            },
+            {
+              name: "Paige",
+              role: "Growth Partner",
+              desc: "Driving performance and commercial growth across paid channels. Paige keeps a close eye on where every dollar is going and how every campaign is tracking.",
+            },
+            {
+              name: "Tracey",
+              role: "Nurture Lead",
+              desc: "Owning your email and lifecycle strategy. Tracey builds the automations, writes the sequences and ensures your nurture engine keeps running.",
+            },
+          ].map(({ name, role, desc }) => (
+            <div key={name} className="fp-team-card">
+              <span className="fp-team-card-name">{name}</span>
+              <span className="fp-team-card-role">{role}</span>
+              <p className="fp-team-card-desc">{desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="fp-team-photo-col reveal">
+          <img className="fp-team-photo" src="" alt="" />
+        </div>
+      </div>
+
+      <footer className="fp-team-footer">
+        <span className="fp-team-footer-left">Stackt</span>
+        <span className="fp-team-footer-right">07</span>
+      </footer>
+    </section>
+  )
+
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div ref={rootRef}>
@@ -1171,6 +1348,7 @@ export default function FurnwareProposal({
       <Problem />
       <HowWeWork />
       <ValueStack />
+      <Team />
     </div>
   )
 }
