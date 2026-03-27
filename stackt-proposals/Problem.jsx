@@ -113,7 +113,15 @@ const PROBLEM_CSS = `
 const DEFAULT_BG =
   "https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=FaMDM0atv"
 
-export default function Problem({ backgroundImage }) {
+export default function Problem({
+  label = "The problem",
+  leftRegular = "Your value stack is our method of bridging the",
+  leftBold = "skill and resource gaps",
+  leftSuffix = "within your team to deliver results at pace.",
+  rightRegular = "You did not sign up to wear this many hats.",
+  rightBold = "So take a few off. We have got it from here.",
+  backgroundImage,
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
@@ -123,11 +131,10 @@ export default function Problem({ backgroundImage }) {
   return (
     <section className="fp-problem" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <div className="fp-problem-left">
-        <span className="fp-problem-label">The problem</span>
+        <span className="fp-problem-label">{label}</span>
         <p className="fp-problem-left-text">
-          Your value stack is our method of bridging the{" "}
-          <strong>skill and resource gaps</strong> within your team to deliver
-          results at pace.
+          {leftRegular}{" "}
+          <strong>{leftBold}</strong> {leftSuffix}
         </p>
       </div>
 
@@ -139,10 +146,10 @@ export default function Problem({ backgroundImage }) {
         />
         <div className="fp-problem-right-content">
           <p className="fp-problem-right-text">
-            You did not sign up to wear this many hats.
+            {rightRegular}
             <br />
             <br />
-            <strong>So take a few off. We have got it from here.</strong>
+            <strong>{rightBold}</strong>
           </p>
         </div>
       </div>
@@ -151,6 +158,36 @@ export default function Problem({ backgroundImage }) {
 }
 
 addPropertyControls(Problem, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "The problem",
+  },
+  leftRegular: {
+    type: ControlType.String,
+    title: "Left Regular",
+    defaultValue: "Your value stack is our method of bridging the",
+  },
+  leftBold: {
+    type: ControlType.String,
+    title: "Left Bold",
+    defaultValue: "skill and resource gaps",
+  },
+  leftSuffix: {
+    type: ControlType.String,
+    title: "Left Suffix",
+    defaultValue: "within your team to deliver results at pace.",
+  },
+  rightRegular: {
+    type: ControlType.String,
+    title: "Right Regular",
+    defaultValue: "You did not sign up to wear this many hats.",
+  },
+  rightBold: {
+    type: ControlType.String,
+    title: "Right Bold",
+    defaultValue: "So take a few off. We have got it from here.",
+  },
   backgroundImage: {
     type: ControlType.Image,
     title: "Background Image",

@@ -147,6 +147,15 @@ const DEFAULT_PHOTO2 =
   "https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=eUf_GLumA"
 
 export default function About({
+  label = "About Stackt",
+  headlineBold = "Bottlenecks hate to see us coming.",
+  headlineLight = "We have been doing this for over a decade and one thing we have learnt is that marketing teams are expected to do everything. Most do not have the people to do it.",
+  col1Para1 = "The brief keeps growing. The budget stays the same. And somewhere between the campaign that needs to go out, the report that is overdue and the social content that needs approving, the strategic work gets pushed to tomorrow.",
+  col1Para2 = "Stackt was born because we kept seeing the same thing. Smart, capable internal teams stretched too thin to deliver on what they actually know how to do.",
+  col2Para1Regular = "We take on the high skill, high effort work and we build systems around it that",
+  col2Para1Bold = "get smarter over time.",
+  col2Para2 = "Every process we put in place has efficiency baked in from the start. We are always finding ways to automate, streamline and improve so that the value we deliver keeps growing without the manual effort growing with it.",
+  col2Para3 = "Less admin. Less double handling. More of your budget doing what it is supposed to do.",
   photo1,
   photo2,
 }) {
@@ -159,49 +168,28 @@ export default function About({
   return (
     <section className="fp-about" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <div className="fp-about-label-row">
-        <span className="fp-about-label">About Stackt</span>
+        <span className="fp-about-label">{label}</span>
         <span className="fp-about-label-line" />
       </div>
 
       <h2 className="fp-about-headline">
-        <strong>Bottlenecks hate to see us coming.</strong> We have been doing
-        this for over a decade and one thing we have learnt is that marketing
-        teams are expected to do everything. Most do not have the people to do
-        it.
+        <strong>{headlineBold}</strong> {headlineLight}
       </h2>
 
       <div className="fp-about-grid">
         <div className="fp-about-col">
-          <p>
-            The brief keeps growing. The budget stays the same. And somewhere
-            between the campaign that needs to go out, the report that is
-            overdue and the social content that needs approving, the strategic
-            work gets pushed to tomorrow.
-          </p>
-          <p>
-            Stackt was born because we kept seeing the same thing. Smart,
-            capable internal teams stretched too thin to deliver on what they
-            actually know how to do.
-          </p>
+          <p>{col1Para1}</p>
+          <p>{col1Para2}</p>
         </div>
 
         <div className="fp-about-col">
           <p>
-            We take on the high skill, high effort work and we build systems
-            around it that{" "}
-            <strong>get smarter over time.</strong>
+            {col2Para1Regular}{" "}
+            <strong>{col2Para1Bold}</strong>
           </p>
+          <p>{col2Para2}</p>
           <p>
-            Every process we put in place has efficiency baked in from the
-            start. We are always finding ways to automate, streamline and
-            improve so that the value we deliver keeps growing without the
-            manual effort growing with it.
-          </p>
-          <p>
-            <strong>
-              Less admin. Less double handling. More of your budget doing what
-              it is supposed to do.
-            </strong>
+            <strong>{col2Para3}</strong>
           </p>
         </div>
       </div>
@@ -228,6 +216,51 @@ export default function About({
 }
 
 addPropertyControls(About, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "About Stackt",
+  },
+  headlineBold: {
+    type: ControlType.String,
+    title: "Headline Bold",
+    defaultValue: "Bottlenecks hate to see us coming.",
+  },
+  headlineLight: {
+    type: ControlType.String,
+    title: "Headline Light",
+    defaultValue: "We have been doing this for over a decade and one thing we have learnt is that marketing teams are expected to do everything. Most do not have the people to do it.",
+  },
+  col1Para1: {
+    type: ControlType.String,
+    title: "Col 1 Para 1",
+    defaultValue: "The brief keeps growing. The budget stays the same. And somewhere between the campaign that needs to go out, the report that is overdue and the social content that needs approving, the strategic work gets pushed to tomorrow.",
+  },
+  col1Para2: {
+    type: ControlType.String,
+    title: "Col 1 Para 2",
+    defaultValue: "Stackt was born because we kept seeing the same thing. Smart, capable internal teams stretched too thin to deliver on what they actually know how to do.",
+  },
+  col2Para1Regular: {
+    type: ControlType.String,
+    title: "Col 2 Para 1 Regular",
+    defaultValue: "We take on the high skill, high effort work and we build systems around it that",
+  },
+  col2Para1Bold: {
+    type: ControlType.String,
+    title: "Col 2 Para 1 Bold",
+    defaultValue: "get smarter over time.",
+  },
+  col2Para2: {
+    type: ControlType.String,
+    title: "Col 2 Para 2",
+    defaultValue: "Every process we put in place has efficiency baked in from the start. We are always finding ways to automate, streamline and improve so that the value we deliver keeps growing without the manual effort growing with it.",
+  },
+  col2Para3: {
+    type: ControlType.String,
+    title: "Col 2 Para 3",
+    defaultValue: "Less admin. Less double handling. More of your budget doing what it is supposed to do.",
+  },
   photo1: {
     type: ControlType.Image,
     title: "Photo 1",

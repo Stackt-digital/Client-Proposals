@@ -166,7 +166,9 @@ const COVER_CSS = `
 `
 
 export default function Cover({
+  eyebrow = "Your value stack — Furnware x Stackt — 2025",
   clientName = "Furnware",
+  subText = "A tailored marketing stack designed to close the gap between where your team is today and where the business needs to go.",
   backgroundImage,
 }) {
   useEffect(() => {
@@ -187,15 +189,14 @@ export default function Cover({
 
       <div className="fp-cover-body">
         <p className="fp-cover-eyebrow">
-          Your value stack — {clientName} x Stackt — 2025
+          {eyebrow}
         </p>
         <h1 className="fp-cover-headline">
           Built for{" "}
           <span className="fp-cover-headline-accent">{clientName}.</span>
         </h1>
         <p className="fp-cover-sub">
-          A tailored marketing stack designed to close the gap between where
-          your team is today and where the business needs to go.
+          {subText}
         </p>
       </div>
 
@@ -213,10 +214,20 @@ export default function Cover({
 }
 
 addPropertyControls(Cover, {
+  eyebrow: {
+    type: ControlType.String,
+    title: "Eyebrow",
+    defaultValue: "Your value stack — Furnware x Stackt — 2025",
+  },
   clientName: {
     type: ControlType.String,
     title: "Client Name",
     defaultValue: "Furnware",
+  },
+  subText: {
+    type: ControlType.String,
+    title: "Sub Text",
+    defaultValue: "A tailored marketing stack designed to close the gap between where your team is today and where the business needs to go.",
   },
   backgroundImage: {
     type: ControlType.Image,

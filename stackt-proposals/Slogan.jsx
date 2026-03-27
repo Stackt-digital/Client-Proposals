@@ -88,7 +88,10 @@ const SLOGAN_CSS = `
   }
 `
 
-export default function Slogan() {
+export default function Slogan({
+  line1 = "The value stack",
+  line2 = "concept.",
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
@@ -99,8 +102,8 @@ export default function Slogan() {
     <section className="fp-slogan" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <div className="fp-slogan-body">
         <h2 className="fp-slogan-text">
-          <span className="fp-slogan-bold">The value stack</span>
-          <span className="fp-slogan-light">concept.</span>
+          <span className="fp-slogan-bold">{line1}</span>
+          <span className="fp-slogan-light">{line2}</span>
         </h2>
       </div>
 
@@ -112,4 +115,15 @@ export default function Slogan() {
   )
 }
 
-addPropertyControls(Slogan, {})
+addPropertyControls(Slogan, {
+  line1: {
+    type: ControlType.String,
+    title: "Line 1",
+    defaultValue: "The value stack",
+  },
+  line2: {
+    type: ControlType.String,
+    title: "Line 2",
+    defaultValue: "concept.",
+  },
+})
