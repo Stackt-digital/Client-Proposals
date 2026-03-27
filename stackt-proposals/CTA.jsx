@@ -177,6 +177,14 @@ const DEFAULT_BG_PHOTO =
   "https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=gLvhdB1UD"
 
 export default function CTA({
+  label = "Next steps",
+  headingLine1 = "90 days from",
+  headingLine2 = "now, something",
+  headingLine3 = "will exist that",
+  headingAccent = "did not today.",
+  bodyText = "Let us get the right tier locked in, confirm the scope and kick off your first 90-day block. The sooner we start, the sooner it compounds.",
+  primaryButtonText = "Let us get started",
+  secondaryButtonText = "Ask a question",
   contactEmail = "lauren@stackt.digital",
   backgroundImage,
 }) {
@@ -196,29 +204,26 @@ export default function CTA({
       />
 
       <div className="fp-cta-content">
-        <span className="fp-cta-label">Next steps</span>
+        <span className="fp-cta-label">{label}</span>
 
         <h2 className="fp-cta-headline">
-          90 days from
+          {headingLine1}
           <br />
-          now, something
+          {headingLine2}
           <br />
-          will exist that
+          {headingLine3}
           <br />
-          <span className="fp-cta-headline-accent">did not today.</span>
+          <span className="fp-cta-headline-accent">{headingAccent}</span>
         </h2>
 
-        <p className="fp-cta-body">
-          Let us get the right tier locked in, confirm the scope and kick off
-          your first 90-day block. The sooner we start, the sooner it compounds.
-        </p>
+        <p className="fp-cta-body">{bodyText}</p>
 
         <div className="fp-cta-buttons">
           <a href={`mailto:${contactEmail}`} className="fp-cta-btn-primary">
-            Let us get started
+            {primaryButtonText}
           </a>
           <a href={`mailto:${contactEmail}`} className="fp-cta-btn-secondary">
-            Ask a question
+            {secondaryButtonText}
           </a>
         </div>
 
@@ -232,6 +237,46 @@ export default function CTA({
 }
 
 addPropertyControls(CTA, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "Next steps",
+  },
+  headingLine1: {
+    type: ControlType.String,
+    title: "Heading Line 1",
+    defaultValue: "90 days from",
+  },
+  headingLine2: {
+    type: ControlType.String,
+    title: "Heading Line 2",
+    defaultValue: "now, something",
+  },
+  headingLine3: {
+    type: ControlType.String,
+    title: "Heading Line 3",
+    defaultValue: "will exist that",
+  },
+  headingAccent: {
+    type: ControlType.String,
+    title: "Heading Accent",
+    defaultValue: "did not today.",
+  },
+  bodyText: {
+    type: ControlType.String,
+    title: "Body Text",
+    defaultValue: "Let us get the right tier locked in, confirm the scope and kick off your first 90-day block. The sooner we start, the sooner it compounds.",
+  },
+  primaryButtonText: {
+    type: ControlType.String,
+    title: "Primary Button Text",
+    defaultValue: "Let us get started",
+  },
+  secondaryButtonText: {
+    type: ControlType.String,
+    title: "Secondary Button Text",
+    defaultValue: "Ask a question",
+  },
   contactEmail: {
     type: ControlType.String,
     title: "Contact Email",

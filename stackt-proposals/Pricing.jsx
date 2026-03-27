@@ -250,104 +250,69 @@ const PRICING_CSS = `
   }
 `
 
-export default function Pricing({ selectedTier = "Amplify" }) {
+const TIER_CLASSES = ["fp-tier-1", "fp-tier-2", "fp-tier-3"]
+const TIER_DELAYS = ["0.1s", "0.2s", "0.3s"]
+
+const DEFAULT_TIERS = [
+  { name: "Ignite", price: "$4,000", desc: "The entry stack. Show up consistently, communicate well and start building smarter systems from the ground up.", features: "Performance marketing Google and Meta AU and NZ,Up to 2 EDMs per month,Basic Dynamics automation setup,GA4 and GTM ownership,Organic social management,Monthly performance reporting,Quarterly 90-day review" },
+  { name: "Amplify", price: "$6,800", desc: "The full growth stack. More channels, more automation, and the AI systems that keep compounding value over time.", features: "Everything in Ignite plus,Google and Meta across AU NZ and ROW,Furnware and Mindfull ad accounts,Up to 3 EDMs per month,Dynamics workflow automation,AI enablement and content systems,Digital design support,Bi-weekly performance review,Partner activation as scoped" },
+  { name: "Surge", price: "$8,000", desc: "The complete stack. Every channel, every system, every specialist. Built for businesses that are ready to move fast and compound hard.", features: "Everything in Amplify plus,Full AI workflow and automation suite,Creator management and UGC,Stackt Partners on-demand,Senior strategy sessions monthly,Custom reporting dashboard,Priority response SLA,Flexible scope for seasonal peaks,Full team and channel coverage" },
+]
+
+export default function Pricing({
+  label = "Your stack, your choice",
+  headingLine1 = "Three tiers. One direction.",
+  headingLine2 = "All compounding from day one.",
+  selectedTier = "Amplify",
+  tiers = DEFAULT_TIERS,
+  note = "All tiers include account management, quarterly 90-day review, and ClickUp project visibility. Pricing is ex-GST. Ad spend is billed separately.",
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
     injectStyles("fw-pricing", PRICING_CSS)
   }, [])
 
-  const tiers = [
-    {
-      cls: "fp-tier-1",
-      name: "Ignite",
-      price: "$4,000",
-      desc: "The entry stack. Show up consistently, communicate well and start building smarter systems from the ground up.",
-      delay: "0.1s",
-      features: [
-        "Performance marketing Google and Meta AU and NZ",
-        "Up to 2 EDMs per month",
-        "Basic Dynamics automation setup",
-        "GA4 and GTM ownership",
-        "Organic social management",
-        "Monthly performance reporting",
-        "Quarterly 90-day review",
-      ],
-    },
-    {
-      cls: "fp-tier-2",
-      name: "Amplify",
-      price: "$6,800",
-      desc: "The full growth stack. More channels, more automation, and the AI systems that keep compounding value over time.",
-      delay: "0.2s",
-      features: [
-        "Everything in Ignite plus",
-        "Google and Meta across AU NZ and ROW",
-        "Furnware and Mindfull ad accounts",
-        "Up to 3 EDMs per month",
-        "Dynamics workflow automation",
-        "AI enablement and content systems",
-        "Digital design support",
-        "Bi-weekly performance review",
-        "Partner activation as scoped",
-      ],
-    },
-    {
-      cls: "fp-tier-3",
-      name: "Surge",
-      price: "$8,000",
-      desc: "The complete stack. Every channel, every system, every specialist. Built for businesses that are ready to move fast and compound hard.",
-      delay: "0.3s",
-      features: [
-        "Everything in Amplify plus",
-        "Full AI workflow and automation suite",
-        "Creator management and UGC",
-        "Stackt Partners on-demand",
-        "Senior strategy sessions monthly",
-        "Custom reporting dashboard",
-        "Priority response SLA",
-        "Flexible scope for seasonal peaks",
-        "Full team and channel coverage",
-      ],
-    },
-  ]
-
   return (
     <section className="fp-pricing" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <span className="fp-pricing-label">Your stack, your choice</span>
+      <span className="fp-pricing-label">{label}</span>
 
       <h2 className="fp-pricing-heading">
-        Three tiers. One direction.
+        {headingLine1}
         <br />
-        <strong>All compounding from day one.</strong>
+        <strong>{headingLine2}</strong>
       </h2>
 
       <div className="fp-pricing-grid">
-        {tiers.map(({ cls, name, price, desc, delay, features }) => (
-          <div
-            key={name}
-            className={`fp-tier ${cls}${name === selectedTier ? " fp-tier-selected" : ""}`}
-            style={{ transitionDelay: delay }}
-          >
-            <span className="fp-tier-name">{name}</span>
-            <span className="fp-tier-price">{price}</span>
-            <span className="fp-tier-billing">per month + GST</span>
-            <p className="fp-tier-desc">{desc}</p>
-            <span className="fp-tier-includes">What is included</span>
-            <ul className="fp-tier-features">
-              {features.map((f) => (
-                <li key={f} className="fp-tier-feature">{f}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {tiers.map((tier, index) => {
+          const cls = TIER_CLASSES[index] || TIER_CLASSES[0]
+          const delay = TIER_DELAYS[index] || "0.1s"
+          const isSelected = tier.name === selectedTier
+          return (
+            <div
+              key={index}
+              className={`fp-tier ${cls}${isSelected ? " fp-tier-selected" : ""}`}
+              style={{
+                transitionDelay: delay,
+                ...(isSelected ? { border: "1px solid var(--sky)", boxShadow: "0 0 0 1px var(--sky)" } : {}),
+              }}
+            >
+              <span className="fp-tier-name">{tier.name}</span>
+              <span className="fp-tier-price">{tier.price}</span>
+              <span className="fp-tier-billing">per month + GST</span>
+              <p className="fp-tier-desc">{tier.desc}</p>
+              <span className="fp-tier-includes">What is included</span>
+              <ul className="fp-tier-features">
+                {tier.features.split(",").map((f, j) => (
+                  <li key={j} className="fp-tier-feature">{f.trim()}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        })}
       </div>
 
-      <p className="fp-pricing-note">
-        All tiers include account management, quarterly 90-day review, and
-        ClickUp project visibility. Pricing is ex-GST. Ad spend is billed
-        separately.
-      </p>
+      <p className="fp-pricing-note">{note}</p>
 
       <footer className="fp-pricing-footer">
         <span className="fp-pricing-footer-left">Stackt</span>
@@ -358,10 +323,44 @@ export default function Pricing({ selectedTier = "Amplify" }) {
 }
 
 addPropertyControls(Pricing, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "Your stack, your choice",
+  },
+  headingLine1: {
+    type: ControlType.String,
+    title: "Heading Line 1",
+    defaultValue: "Three tiers. One direction.",
+  },
+  headingLine2: {
+    type: ControlType.String,
+    title: "Heading Line 2",
+    defaultValue: "All compounding from day one.",
+  },
   selectedTier: {
     type: ControlType.Enum,
     title: "Selected Tier",
     options: ["Ignite", "Amplify", "Surge"],
     defaultValue: "Amplify",
+  },
+  tiers: {
+    type: ControlType.Array,
+    title: "Tiers",
+    control: {
+      type: ControlType.Object,
+      controls: {
+        name: { type: ControlType.String, title: "Name", defaultValue: "Tier Name" },
+        price: { type: ControlType.String, title: "Price", defaultValue: "$0,000" },
+        desc: { type: ControlType.String, title: "Description", defaultValue: "Tier description." },
+        features: { type: ControlType.String, title: "Features", description: "Comma separated list", defaultValue: "Feature one,Feature two" },
+      },
+    },
+    defaultValue: DEFAULT_TIERS,
+  },
+  note: {
+    type: ControlType.String,
+    title: "Note",
+    defaultValue: "All tiers include account management, quarterly 90-day review, and ClickUp project visibility. Pricing is ex-GST. Ad spend is billed separately.",
   },
 })

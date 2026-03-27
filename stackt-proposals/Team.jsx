@@ -160,52 +160,42 @@ const TEAM_CSS = `
 const DEFAULT_TEAM_PHOTO =
   "https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=SLPHgrtfA"
 
-export default function Team({ teamPhoto }) {
+const DEFAULT_MEMBERS = [
+  { name: "Ash", role: "Strategy", desc: "Your strategic lead. Ash brings over a decade of agency experience and is accountable for the direction, quality and output of your stack." },
+  { name: "Lauren", role: "Business Director and AI Enablement Lead — Primary Contact", desc: "Senior oversight across all client accounts. Lauren ensures consistency, quality control and that every deliverable is held to the standard it should be." },
+  { name: "Paige", role: "Growth Partner", desc: "Driving performance and commercial growth across paid channels. Paige keeps a close eye on where every dollar is going and how every campaign is tracking." },
+  { name: "Tracey", role: "Nurture Lead", desc: "Owning your email and lifecycle strategy. Tracey builds the automations, writes the sequences and ensures your nurture engine keeps running." },
+]
+
+export default function Team({
+  label = "Your team",
+  headingRegular = "Proven people.",
+  headingBold = "Senior oversight. No juniors learning on your budget.",
+  members = DEFAULT_MEMBERS,
+  teamPhoto,
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
     injectStyles("fw-team", TEAM_CSS)
   }, [])
 
-  const members = [
-    {
-      name: "Ash",
-      role: "Strategy",
-      desc: "Your strategic lead. Ash brings over a decade of agency experience and is accountable for the direction, quality and output of your stack.",
-    },
-    {
-      name: "Lauren",
-      role: "Business Director and AI Enablement Lead — Primary Contact",
-      desc: "Senior oversight across all client accounts. Lauren ensures consistency, quality control and that every deliverable is held to the standard it should be.",
-    },
-    {
-      name: "Paige",
-      role: "Growth Partner",
-      desc: "Driving performance and commercial growth across paid channels. Paige keeps a close eye on where every dollar is going and how every campaign is tracking.",
-    },
-    {
-      name: "Tracey",
-      role: "Nurture Lead",
-      desc: "Owning your email and lifecycle strategy. Tracey builds the automations, writes the sequences and ensures your nurture engine keeps running.",
-    },
-  ]
-
   return (
     <section className="fp-team" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <span className="fp-team-label">Your team</span>
+      <span className="fp-team-label">{label}</span>
 
       <h2 className="fp-team-heading">
-        Proven people.{" "}
-        <strong>Senior oversight. No juniors learning on your budget.</strong>
+        {headingRegular}{" "}
+        <strong>{headingBold}</strong>
       </h2>
 
       <div className="fp-team-grid">
         <div className="fp-team-cards">
-          {members.map(({ name, role, desc }) => (
-            <div key={name} className="fp-team-card">
-              <span className="fp-team-card-name">{name}</span>
-              <span className="fp-team-card-role">{role}</span>
-              <p className="fp-team-card-desc">{desc}</p>
+          {members.map((member, i) => (
+            <div key={i} className="fp-team-card">
+              <span className="fp-team-card-name">{member.name}</span>
+              <span className="fp-team-card-role">{member.role}</span>
+              <p className="fp-team-card-desc">{member.desc}</p>
             </div>
           ))}
         </div>
@@ -228,6 +218,34 @@ export default function Team({ teamPhoto }) {
 }
 
 addPropertyControls(Team, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "Your team",
+  },
+  headingRegular: {
+    type: ControlType.String,
+    title: "Heading Regular",
+    defaultValue: "Proven people.",
+  },
+  headingBold: {
+    type: ControlType.String,
+    title: "Heading Bold",
+    defaultValue: "Senior oversight. No juniors learning on your budget.",
+  },
+  members: {
+    type: ControlType.Array,
+    title: "Members",
+    control: {
+      type: ControlType.Object,
+      controls: {
+        name: { type: ControlType.String, title: "Name", defaultValue: "Name" },
+        role: { type: ControlType.String, title: "Role", defaultValue: "Role" },
+        desc: { type: ControlType.String, title: "Description", defaultValue: "Description." },
+      },
+    },
+    defaultValue: DEFAULT_MEMBERS,
+  },
   teamPhoto: {
     type: ControlType.Image,
     title: "Team Photo",

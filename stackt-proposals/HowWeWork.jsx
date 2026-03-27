@@ -182,7 +182,24 @@ const HOW_CSS = `
   }
 `
 
-export default function HowWeWork() {
+const DEFAULT_CARDS = [
+  { num: "01", title: "We get under the hood", body: "No work starts without strategy. We learn your business, your tone, your team and what keeps you up at night. The better we know you, the better the work gets. And we are always paying attention." },
+  { num: "02", title: "We build to compound", body: "Every system, every process, every workflow we create is designed to do more over time with less effort. We bake efficiency in from day one because we think your budget should go toward results, not admin." },
+  { num: "03", title: "We bring in the right people", body: "Some work needs a specialist. When that moment comes we do not improvise. We bring in our Stackt Partners, verified experts who know their craft inside out, briefed and managed entirely by us. You get the best person for the job without another relationship to manage." },
+  { num: "04", title: "We reset and back ourselves", body: "Every quarter we sit down together, call it like it is and set the targets for the next block. Then we chase them down. No cruising. No set and forget. Just an honest partnership that keeps raising the bar." },
+]
+
+export default function HowWeWork({
+  label = "How we work",
+  headingRegular = "We only do the work that",
+  headingBold = "actually moves the needle.",
+  cards = DEFAULT_CARDS,
+  rhythmStat = "90",
+  rhythmLabel = "Day rhythm",
+  rhythmRegular = "Every 90 days we reset. We review what landed, what did not and where the opportunity is. We set stretch targets for the next quarter and we go after them together.",
+  rhythmBold = "This is not a set and forget retainer. It is a partnership that raises the bar every single quarter.",
+  rhythmSuffix = "No complacency. No coast mode. Just compound growth, built on honest results.",
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
@@ -191,73 +208,32 @@ export default function HowWeWork() {
 
   return (
     <section className="fp-how" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <span className="fp-how-label">How we work</span>
+      <span className="fp-how-label">{label}</span>
 
       <h2 className="fp-how-heading">
-        We only do the work that{" "}
-        <strong>actually moves the needle.</strong>
+        {headingRegular}{" "}
+        <strong>{headingBold}</strong>
       </h2>
 
       <div className="fp-how-grid">
-        <div className="fp-how-card">
-          <span className="fp-how-card-num">01</span>
-          <span className="fp-how-card-title">We get under the hood</span>
-          <p className="fp-how-card-body">
-            No work starts without strategy. We learn your business, your tone,
-            your team and what keeps you up at night. The better we know you,
-            the better the work gets. And we are always paying attention.
-          </p>
-        </div>
-
-        <div className="fp-how-card">
-          <span className="fp-how-card-num">02</span>
-          <span className="fp-how-card-title">We build to compound</span>
-          <p className="fp-how-card-body">
-            Every system, every process, every workflow we create is designed to
-            do more over time with less effort. We bake efficiency in from day
-            one because we think your budget should go toward results, not admin.
-          </p>
-        </div>
-
-        <div className="fp-how-card">
-          <span className="fp-how-card-num">03</span>
-          <span className="fp-how-card-title">We bring in the right people</span>
-          <p className="fp-how-card-body">
-            Some work needs a specialist. When that moment comes we do not
-            improvise. We bring in our Stackt Partners, verified experts who
-            know their craft inside out, briefed and managed entirely by us. You
-            get the best person for the job without another relationship to
-            manage.
-          </p>
-        </div>
-
-        <div className="fp-how-card">
-          <span className="fp-how-card-num">04</span>
-          <span className="fp-how-card-title">We reset and back ourselves</span>
-          <p className="fp-how-card-body">
-            Every quarter we sit down together, call it like it is and set the
-            targets for the next block. Then we chase them down. No cruising. No
-            set and forget. Just an honest partnership that keeps raising the
-            bar.
-          </p>
-        </div>
+        {cards.map((card, i) => (
+          <div key={i} className="fp-how-card">
+            <span className="fp-how-card-num">{card.num}</span>
+            <span className="fp-how-card-title">{card.title}</span>
+            <p className="fp-how-card-body">{card.body}</p>
+          </div>
+        ))}
       </div>
 
       <div className="fp-how-rhythm">
         <div className="fp-how-rhythm-left">
-          <span className="fp-how-rhythm-num">90</span>
-          <span className="fp-how-rhythm-label">Day rhythm</span>
+          <span className="fp-how-rhythm-num">{rhythmStat}</span>
+          <span className="fp-how-rhythm-label">{rhythmLabel}</span>
         </div>
         <p className="fp-how-rhythm-body">
-          Every 90 days we reset. We review what landed, what did not and where
-          the opportunity is. We set stretch targets for the next quarter and we
-          go after them together.{" "}
-          <strong>
-            This is not a set and forget retainer. It is a partnership that
-            raises the bar every single quarter.
-          </strong>{" "}
-          No complacency. No coast mode. Just compound growth, built on honest
-          results.
+          {rhythmRegular}{" "}
+          <strong>{rhythmBold}</strong>{" "}
+          {rhythmSuffix}
         </p>
       </div>
 
@@ -269,4 +245,58 @@ export default function HowWeWork() {
   )
 }
 
-addPropertyControls(HowWeWork, {})
+addPropertyControls(HowWeWork, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "How we work",
+  },
+  headingRegular: {
+    type: ControlType.String,
+    title: "Heading Regular",
+    defaultValue: "We only do the work that",
+  },
+  headingBold: {
+    type: ControlType.String,
+    title: "Heading Bold",
+    defaultValue: "actually moves the needle.",
+  },
+  cards: {
+    type: ControlType.Array,
+    title: "Cards",
+    control: {
+      type: ControlType.Object,
+      controls: {
+        num: { type: ControlType.String, title: "Number", defaultValue: "01" },
+        title: { type: ControlType.String, title: "Title", defaultValue: "Card title" },
+        body: { type: ControlType.String, title: "Body", defaultValue: "Card body text." },
+      },
+    },
+    defaultValue: DEFAULT_CARDS,
+  },
+  rhythmStat: {
+    type: ControlType.String,
+    title: "Rhythm Stat",
+    defaultValue: "90",
+  },
+  rhythmLabel: {
+    type: ControlType.String,
+    title: "Rhythm Label",
+    defaultValue: "Day rhythm",
+  },
+  rhythmRegular: {
+    type: ControlType.String,
+    title: "Rhythm Regular",
+    defaultValue: "Every 90 days we reset. We review what landed, what did not and where the opportunity is. We set stretch targets for the next quarter and we go after them together.",
+  },
+  rhythmBold: {
+    type: ControlType.String,
+    title: "Rhythm Bold",
+    defaultValue: "This is not a set and forget retainer. It is a partnership that raises the bar every single quarter.",
+  },
+  rhythmSuffix: {
+    type: ControlType.String,
+    title: "Rhythm Suffix",
+    defaultValue: "No complacency. No coast mode. Just compound growth, built on honest results.",
+  },
+})

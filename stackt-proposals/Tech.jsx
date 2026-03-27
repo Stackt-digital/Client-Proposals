@@ -144,106 +144,74 @@ const TECH_CSS = `
   }
 `
 
-export default function Tech() {
+const ICONS = [
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 13V9M6 13V6M10 13V8M14 13V3" />
+  </svg>,
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="3" cy="8" r="1.5" />
+    <circle cx="13" cy="3.5" r="1.5" />
+    <circle cx="13" cy="12.5" r="1.5" />
+    <path d="M4.4 7.3L11.6 4.2M4.4 8.7L11.6 11.8" />
+  </svg>,
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="12" height="9" rx="1.5" />
+    <path d="M2 6L8 10L14 6" />
+  </svg>,
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="2,12 5,7.5 8.5,9.5 13,3" />
+    <path d="M2 12H14" />
+  </svg>,
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5Z" />
+  </svg>,
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="2" width="10" height="5" rx="1" />
+    <rect x="3" y="9" width="6" height="5" rx="1" />
+  </svg>,
+]
+
+const DURATIONS = ["2.8s", "3.4s", "3.0s", "2.6s", "3.6s", "3.2s"]
+
+const DEFAULT_TOOLS = [
+  { name: "Google Ads", purpose: "Paid Search", desc: "Campaign architecture, audience segmentation, and budget pacing across AU, NZ, and ROW markets." },
+  { name: "Meta Ads", purpose: "Paid Social", desc: "Full-funnel campaign management across Facebook and Instagram for Furnware and Mindfull." },
+  { name: "Microsoft Dynamics", purpose: "Email and CRM", desc: "Automation setup, lifecycle flows, and segmentation. Your nurture engine, built to run on its own." },
+  { name: "GA4 and GTM", purpose: "Analytics and Tracking", desc: "Full ownership of your analytics setup. Clean data, accurate attribution, and reporting you can act on." },
+  { name: "Claude and AI Tools", purpose: "AI Enablement", desc: "Workflow automation, content scaling, and reporting infrastructure. We configure the tools and train your team." },
+  { name: "Framer", purpose: "Web and Landing Pages", desc: "Fast, conversion-focused landing pages and campaign assets built and iterated without waiting on a dev queue." },
+]
+
+export default function Tech({
+  label = "Your tech stack",
+  headingRegular = "The infrastructure that makes the whole thing run",
+  headingBold = "faster, smarter, and more visible.",
+  tools = DEFAULT_TOOLS,
+}) {
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
     injectStyles("fw-tech", TECH_CSS)
   }, [])
 
-  const tools = [
-    {
-      name: "Google Ads",
-      purpose: "Paid Search",
-      desc: "Campaign architecture, audience segmentation, and budget pacing across AU, NZ, and ROW markets.",
-      duration: "2.8s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 13V9M6 13V6M10 13V8M14 13V3" />
-        </svg>
-      ),
-    },
-    {
-      name: "Meta Ads",
-      purpose: "Paid Social",
-      desc: "Full-funnel campaign management across Facebook and Instagram for Furnware and Mindfull.",
-      duration: "3.4s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="3" cy="8" r="1.5" />
-          <circle cx="13" cy="3.5" r="1.5" />
-          <circle cx="13" cy="12.5" r="1.5" />
-          <path d="M4.4 7.3L11.6 4.2M4.4 8.7L11.6 11.8" />
-        </svg>
-      ),
-    },
-    {
-      name: "Microsoft Dynamics",
-      purpose: "Email and CRM",
-      desc: "Automation setup, lifecycle flows, and segmentation. Your nurture engine, built to run on its own.",
-      duration: "3.0s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="4" width="12" height="9" rx="1.5" />
-          <path d="M2 6L8 10L14 6" />
-        </svg>
-      ),
-    },
-    {
-      name: "GA4 and GTM",
-      purpose: "Analytics and Tracking",
-      desc: "Full ownership of your analytics setup. Clean data, accurate attribution, and reporting you can act on.",
-      duration: "2.6s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="2,12 5,7.5 8.5,9.5 13,3" />
-          <path d="M2 12H14" />
-        </svg>
-      ),
-    },
-    {
-      name: "Claude and AI Tools",
-      purpose: "AI Enablement",
-      desc: "Workflow automation, content scaling, and reporting infrastructure. We configure the tools and train your team.",
-      duration: "3.6s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5Z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Framer",
-      purpose: "Web and Landing Pages",
-      desc: "Fast, conversion-focused landing pages and campaign assets built and iterated without waiting on a dev queue.",
-      duration: "3.2s",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sky)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="2" width="10" height="5" rx="1" />
-          <rect x="3" y="9" width="6" height="5" rx="1" />
-        </svg>
-      ),
-    },
-  ]
-
   return (
     <section className="fp-tech" style={{ width: "100%", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <span className="fp-tech-label">Your tech stack</span>
+      <span className="fp-tech-label">{label}</span>
 
       <h2 className="fp-tech-heading">
-        The infrastructure that makes the whole thing run{" "}
-        <strong>faster, smarter, and more visible.</strong>
+        {headingRegular}{" "}
+        <strong>{headingBold}</strong>
       </h2>
 
       <div className="fp-tech-grid">
-        {tools.map(({ name, purpose, desc, duration, icon }) => (
-          <div key={name} className="fp-tech-card">
-            <div className="fp-tech-icon" style={{ animationDuration: duration }}>
-              {icon}
+        {tools.map((tool, i) => (
+          <div key={i} className="fp-tech-card">
+            <div className="fp-tech-icon" style={{ animationDuration: DURATIONS[i] || "3.0s" }}>
+              {ICONS[i] || ICONS[0]}
             </div>
-            <span className="fp-tech-name">{name}</span>
-            <span className="fp-tech-purpose">{purpose}</span>
-            <p className="fp-tech-desc">{desc}</p>
+            <span className="fp-tech-name">{tool.name}</span>
+            <span className="fp-tech-purpose">{tool.purpose}</span>
+            <p className="fp-tech-desc">{tool.desc}</p>
           </div>
         ))}
       </div>
@@ -256,4 +224,33 @@ export default function Tech() {
   )
 }
 
-addPropertyControls(Tech, {})
+addPropertyControls(Tech, {
+  label: {
+    type: ControlType.String,
+    title: "Label",
+    defaultValue: "Your tech stack",
+  },
+  headingRegular: {
+    type: ControlType.String,
+    title: "Heading Regular",
+    defaultValue: "The infrastructure that makes the whole thing run",
+  },
+  headingBold: {
+    type: ControlType.String,
+    title: "Heading Bold",
+    defaultValue: "faster, smarter, and more visible.",
+  },
+  tools: {
+    type: ControlType.Array,
+    title: "Tools",
+    control: {
+      type: ControlType.Object,
+      controls: {
+        name: { type: ControlType.String, title: "Name", defaultValue: "Tool Name" },
+        purpose: { type: ControlType.String, title: "Purpose", defaultValue: "Purpose" },
+        desc: { type: ControlType.String, title: "Description", defaultValue: "Tool description." },
+      },
+    },
+    defaultValue: DEFAULT_TOOLS,
+  },
+})
