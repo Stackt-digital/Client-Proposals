@@ -71,7 +71,7 @@ export default function FurnwareProposal({
         inset: 0;
         right: 0;
         left: 40%;
-        background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80');
+        background-image: url('https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=lMJGJg4EQ');
         background-size: cover;
         background-position: center;
         filter: grayscale(100%) brightness(0.45);
@@ -1500,8 +1500,8 @@ export default function FurnwareProposal({
       </div>
 
       <div className="fp-about-photos reveal">
-        <img className="fp-about-photo" src="" alt="" />
-        <img className="fp-about-photo" src="" alt="" />
+        <img className="fp-about-photo" src="https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=euFziptGK" alt="" />
+        <img className="fp-about-photo" src="https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=eUf_GLumA" alt="" />
       </div>
 
       <footer className="fp-about-footer">
@@ -1523,7 +1523,7 @@ export default function FurnwareProposal({
       </div>
 
       <div className="fp-problem-right">
-        <img className="fp-problem-right-bg" src="" alt="" />
+        <img className="fp-problem-right-bg" src="https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=FaMDM0atv" alt="" />
         <div className="fp-problem-right-content">
           <p className="fp-problem-right-text reveal">
             You did not sign up to wear this many hats.
@@ -1791,7 +1791,7 @@ export default function FurnwareProposal({
         </div>
 
         <div className="fp-team-photo-col reveal">
-          <img className="fp-team-photo" src="" alt="" />
+          <img className="fp-team-photo" src="https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=SLPHgrtfA" alt="" />
         </div>
       </div>
 
@@ -2012,7 +2012,7 @@ export default function FurnwareProposal({
   const CTA = () => (
     <section className="fp-cta">
       <div className="fp-cta-orb" />
-      <img className="fp-cta-bg-photo" src="" alt="" />
+      <img className="fp-cta-bg-photo" src="https://framer.com/projects/Memorable-Storm--m9CMVzGcopmMMNHdF48l-24aQI?node=gLvhdB1UD" alt="" />
 
       <div className="fp-cta-content">
         <span className="fp-cta-label reveal">Next steps</span>
