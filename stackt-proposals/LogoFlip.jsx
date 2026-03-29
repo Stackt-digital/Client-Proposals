@@ -32,7 +32,6 @@ const BASE_CSS = `
 `
 
 const FLIP_CSS = `
-  /* ── Section shell ── */
   .fp-lf {
     background: var(--charcoal);
     padding: 80px 80px 100px;
@@ -62,101 +61,47 @@ const FLIP_CSS = `
     background: var(--mid);
   }
 
-  /* ── Row of tiles ── */
+  /* Row of tiles */
   .fp-lf-row {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
-    perspective: 800px;
+    perspective: 900px;
   }
 
-  /* ── Each tile ── */
+  /* Each tile — starts folded away, flips in on reveal */
   .fp-lf-tile {
-    position: relative;
     width: 176px;
     height: 76px;
     flex-shrink: 0;
-  }
-
-  /* Both halves share base styles */
-  .fp-lf-half {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 50%;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.35s ease, background 0.35s ease;
+    border-radius: 12px;
+    transform-origin: center bottom;
+    transform: rotateX(90deg);
+    opacity: 0;
+    transition: border-color 0.3s ease, background 0.3s ease;
   }
 
-  .fp-lf-tile:hover .fp-lf-half {
+  /* Tile after flip-in completes */
+  .fp-lf-tile--in {
+    animation: fp-lf-flip 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes fp-lf-flip {
+    0%   { transform: rotateX(90deg);  opacity: 0; }
+    60%  { opacity: 1; }
+    100% { transform: rotateX(0deg);   opacity: 1; }
+  }
+
+  .fp-lf-tile--in:hover {
     border-color: rgba(187, 234, 249, 0.28);
     background: rgba(187, 234, 249, 0.04);
-  }
-
-  .fp-lf-half-top {
-    top: 0;
-    border-radius: 12px 12px 0 0;
-    border-bottom: none;
-    align-items: flex-end;
-  }
-
-  .fp-lf-half-bottom {
-    bottom: 0;
-    border-radius: 0 0 12px 12px;
-    border-top: none;
-    align-items: flex-start;
-    transform-origin: center top;
-    transform: rotateX(-90deg);
-  }
-
-  /* When revealed, the bottom half flips in */
-  .fp-lf-half-bottom--in {
-    animation: fp-lf-flip-in 0.42s cubic-bezier(0, 0, 0.4, 1) forwards;
-  }
-
-  @keyframes fp-lf-flip-in {
-    0%   { transform: rotateX(-90deg); box-shadow: 0 -6px 16px rgba(0,0,0,0.5); }
-    100% { transform: rotateX(0deg);   box-shadow: none; }
-  }
-
-  /* Seam line between halves */
-  .fp-lf-seam {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background: #0d0d0d;
-    z-index: 10;
-    pointer-events: none;
-  }
-
-  /* Image wrappers — double the half height so logo appears
-     centred across the full tile (top anchored top:0,
-     bottom anchored bottom:0) */
-  .fp-lf-img-wrap-top {
-    position: absolute;
-    inset: 0;
-    bottom: -100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .fp-lf-img-wrap-bottom {
-    position: absolute;
-    inset: 0;
-    top: -100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .fp-lf-logo {
@@ -168,10 +113,10 @@ const FLIP_CSS = `
     display: block;
     user-select: none;
     -webkit-user-drag: none;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.3s ease;
   }
 
-  .fp-lf-tile:hover .fp-lf-logo {
+  .fp-lf-tile--in:hover .fp-lf-logo {
     opacity: 0.85;
   }
 
@@ -181,25 +126,13 @@ const FLIP_CSS = `
     font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.14);
     text-align: center;
-    padding: 0 12px;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 `
 
 const DEFAULT_LOGOS = Array(5).fill("")
-
-function HalfContent({ src, index, wrapClass }) {
-  return (
-    <div className={wrapClass}>
-      {src
-        ? <img src={src} alt={`Partner ${index + 1}`} className="fp-lf-logo" />
-        : <span className="fp-lf-placeholder">Partner<br />{index + 1}</span>
-      }
-    </div>
-  )
-}
 
 export default function LogoFlip({
   label = "Trusted by",
@@ -215,7 +148,6 @@ export default function LogoFlip({
     injectStyles("fw-logoflip", FLIP_CSS)
   }, [])
 
-  // Stagger each tile's bottom-half flip when row scrolls into view
   useEffect(() => {
     if (!rowRef.current) return
 
@@ -242,30 +174,22 @@ export default function LogoFlip({
 
   return (
     <section className="fp-lf" style={{ width: "100%" }}>
-      {/* Label */}
       <div className="fp-lf-label-row">
         <span className="fp-lf-rule" />
         <span className="fp-lf-label">{label}</span>
         <span className="fp-lf-rule" />
       </div>
 
-      {/* Tiles */}
       <div className="fp-lf-row" ref={rowRef}>
         {logos.map((src, i) => (
-          <div key={i} className="fp-lf-tile">
-
-            {/* Top half — instantly visible, shows top of logo */}
-            <div className="fp-lf-half fp-lf-half-top">
-              <HalfContent src={src} index={i} wrapClass="fp-lf-img-wrap-top" />
-            </div>
-
-            {/* Bottom half — flips in with staggered delay */}
-            <div className={`fp-lf-half fp-lf-half-bottom${revealed.includes(i) ? " fp-lf-half-bottom--in" : ""}`}>
-              <HalfContent src={src} index={i} wrapClass="fp-lf-img-wrap-bottom" />
-            </div>
-
-            {/* Seam */}
-            <div className="fp-lf-seam" />
+          <div
+            key={i}
+            className={`fp-lf-tile${revealed.includes(i) ? " fp-lf-tile--in" : ""}`}
+          >
+            {src
+              ? <img src={src} alt={`Partner ${i + 1}`} className="fp-lf-logo" />
+              : <span className="fp-lf-placeholder">Partner<br />{i + 1}</span>
+            }
           </div>
         ))}
       </div>
