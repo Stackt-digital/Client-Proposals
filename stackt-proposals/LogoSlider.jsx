@@ -176,16 +176,19 @@ const SLIDER_CSS = `
   }
 `
 
-const EMPTY = ""
-const DEFAULT_LOGOS = Array(12).fill(EMPTY)
+// 5 current partners — add more via the Logos property control in Framer
+const DEFAULT_LOGOS = ["", "", "", "", ""] // Google, Klaviyo, Shopify, HubSpot, Meta
+
+const PARTNER_NAMES = ["Google", "Klaviyo", "Shopify", "HubSpot", "Meta"]
 
 function LogoTile({ src, index }) {
+  const name = PARTNER_NAMES[index] || "Partner"
   return (
     <div className="fp-logo-tile">
       {src ? (
-        <img src={src} alt={`Partner ${index + 1}`} />
+        <img src={src} alt={name} />
       ) : (
-        <span className="fp-logo-placeholder">Partner<br />Logo</span>
+        <span className="fp-logo-placeholder">{name}</span>
       )}
     </div>
   )
@@ -201,16 +204,20 @@ export default function LogoSlider({
     injectStyles("fw-logos", SLIDER_CSS)
   }, [])
 
-  // Ensure at least 12 slots, split into 3 rows of 4
-  const padded = [...logos, ...DEFAULT_LOGOS].slice(0, 12)
+  // Distribute logos evenly across 3 rows, looping through all logos per row
+  const total = logos.length || 1
+  const perRow = Math.ceil(total / 3)
   const rows = [
-    padded.slice(0, 4),
-    padded.slice(4, 8),
-    padded.slice(8, 12),
-  ]
+    logos.slice(0, perRow),
+    logos.slice(perRow, perRow * 2),
+    logos.slice(perRow * 2),
+  ].map((row) => (row.length ? row : logos.slice(0, perRow)))
 
-  // Duplicate each row 4× for a seamless loop on any viewport width
-  const loop = (arr) => [...arr, ...arr, ...arr, ...arr]
+  // Duplicate each row enough times for a seamless loop on any viewport width
+  const loop = (arr) => {
+    const copies = Math.ceil(20 / arr.length)
+    return Array.from({ length: copies }, () => arr).flat()
+  }
 
   const rowClasses = ["fp-logos-row fp-logos-row-a", "fp-logos-row fp-logos-row-b", "fp-logos-row fp-logos-row-c"]
 
@@ -230,7 +237,7 @@ export default function LogoSlider({
           {rows.map((row, ri) => (
             <div key={ri} className={rowClasses[ri]}>
               {loop(row).map((src, i) => (
-                <LogoTile key={i} src={src} index={i % 4} />
+                <LogoTile key={i} src={src} index={logos.indexOf(src)} />
               ))}
             </div>
           ))}
@@ -249,7 +256,7 @@ addPropertyControls(LogoSlider, {
   logos: {
     type: ControlType.Array,
     title: "Logos",
-    maxCount: 12,
+    maxCount: 20,
     control: { type: ControlType.Image },
   },
 })
