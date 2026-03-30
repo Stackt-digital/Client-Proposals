@@ -28,9 +28,8 @@ const BASE_CSS = `
   }
 `
 
-// Layout is designed for a 1440px wide Framer frame.
-// Content occupies the centre ~560px; canvases fill immediately either side.
 const HOLD_CSS = `
+  /* ── Shell ── */
   .fp-hold {
     position: relative;
     width: 1440px;
@@ -40,19 +39,18 @@ const HOLD_CSS = `
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
-  /* Canvases pinned to bottom, placed right beside the centre content */
+  /* ── Canvases ── */
   .fp-hold-canvas {
     position: absolute;
     bottom: 0;
     z-index: 1;
     display: block;
   }
-  /* Right edge of left canvas = centre − 290px */
+  /* Desktop: immediately beside the centred 580px content zone */
   .fp-hold-canvas-left  { right: calc(50% + 290px); }
-  /* Left edge of right canvas = centre + 290px */
   .fp-hold-canvas-right { left:  calc(50% + 290px); }
 
-  /* Tight dark oval behind the text so blocks show clearly at the edges */
+  /* ── Dark oval overlay — keeps text readable ── */
   .fp-hold-overlay {
     position: absolute;
     inset: 0;
@@ -67,7 +65,7 @@ const HOLD_CSS = `
     pointer-events: none;
   }
 
-  /* Centred content */
+  /* ── Centred content ── */
   .fp-hold-content {
     position: absolute;
     inset: 0;
@@ -174,16 +172,93 @@ const HOLD_CSS = `
   }
   .fp-hold-status--success { color: var(--sky); }
   .fp-hold-status--error   { color: #ff7070; }
+
+  /* ── Mobile ── */
+  @media (max-width: 767px) {
+    .fp-hold {
+      width: 100%;
+      height: 100svh; /* use svh so mobile browser chrome doesn't clip */
+    }
+
+    /* On mobile the canvases sit flush at each edge */
+    .fp-hold-canvas-left  { right: unset; left: 0; }
+    .fp-hold-canvas-right { left:  unset; right: 0; }
+
+    /* Wider oval so it covers the narrow content strip */
+    .fp-hold-overlay {
+      background: radial-gradient(
+        ellipse 78% 68% at 50% 50%,
+        rgba(38,38,38,0.97) 30%,
+        rgba(38,38,38,0.65) 55%,
+        rgba(38,38,38,0.10) 78%,
+        transparent 100%
+      );
+    }
+
+    .fp-hold-heading {
+      font-size: 28px;
+      max-width: 260px;
+    }
+
+    .fp-hold-sub {
+      font-size: 10px;
+      max-width: 240px;
+      margin-bottom: 32px;
+    }
+
+    /* Stack form vertically on small screens */
+    .fp-hold-form {
+      flex-direction: column;
+      max-width: 280px;
+    }
+
+    .fp-hold-btn {
+      width: 100%;
+      padding: 0;
+    }
+
+    .fp-hold-logo { margin-bottom: 24px; }
+  }
+
+  /* ── Tablet (768 – 1023px) ── */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .fp-hold {
+      width: 100%;
+    }
+    /* Tablet canvases positioned closer to centre */
+    .fp-hold-canvas-left  { right: calc(50% + 220px); }
+    .fp-hold-canvas-right { left:  calc(50% + 220px); }
+
+    .fp-hold-overlay {
+      background: radial-gradient(
+        ellipse 52% 72% at 50% 50%,
+        rgba(38,38,38,0.96) 28%,
+        rgba(38,38,38,0.60) 52%,
+        rgba(38,38,38,0.08) 72%,
+        transparent 100%
+      );
+    }
+
+    .fp-hold-heading { font-size: clamp(26px, 3.2vw, 38px); }
+  }
 `
 
 // ─── Tetris constants ─────────────────────────────────────────────────────────
 
-// Each side canvas is 14 cols × 30px = 420px wide, filling the space between
-// the centred text (~580px) and the 1440px frame edges.
-const COLS   = 14
-const CELL   = 30
-const TICK_L = 160   // fast — left side
-const TICK_R = 190   // slightly offset so sides feel independent
+// Desktop: 14 cols × 30px = 420px per side
+const D_COLS = 14
+const D_CELL = 30
+
+// Tablet: 8 cols × 26px = 208px per side
+const T_COLS = 8
+const T_CELL = 26
+
+// Mobile: 3 cols × 22px = 66px per side (tight strips flanking text)
+const M_COLS = 3
+const M_CELL = 22
+
+const TICK_L = 160
+const TICK_R = 190
 
 const PIECES = [
   { shape: [[1,1,1,1]],         color: "#BBEAF9" },
@@ -197,25 +272,25 @@ const PIECES = [
 
 const FLASH_COLOR = "rgba(240,240,242,0.95)"
 
-// ─── Game logic ───────────────────────────────────────────────────────────────
+// ─── Game logic (parameterised by cols + cell) ────────────────────────────────
 
-function emptyBoard(rows) {
-  return Array.from({ length: rows }, () => Array(COLS).fill(null))
+function emptyBoard(rows, cols) {
+  return Array.from({ length: rows }, () => Array(cols).fill(null))
 }
 
-function randomPiece() {
+function randomPiece(cols) {
   const p = PIECES[Math.floor(Math.random() * PIECES.length)]
-  return { shape: p.shape, color: p.color, x: Math.floor((COLS - p.shape[0].length) / 2), y: 0 }
+  return { shape: p.shape, color: p.color, x: Math.floor((cols - p.shape[0].length) / 2), y: 0 }
 }
 
-function fits(board, piece, dx = 0, dy = 0) {
-  const ROWS = board.length
+function fits(board, piece, cols, dx = 0, dy = 0) {
+  const rows = board.length
   return piece.shape.every((row, r) =>
     row.every((cell, c) => {
       if (!cell) return true
       const nx = piece.x + c + dx
       const ny = piece.y + r + dy
-      return nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && !board[ny][nx]
+      return nx >= 0 && nx < cols && ny >= 0 && ny < rows && !board[ny][nx]
     })
   )
 }
@@ -232,97 +307,94 @@ function getCompleteRows(board) {
   return board.reduce((acc, row, i) => (row.every(Boolean) ? [...acc, i] : acc), [])
 }
 
-function removeRows(board, indices) {
+function removeRows(board, indices, cols) {
   const kept  = board.filter((_, i) => !indices.includes(i))
-  const empty = Array.from({ length: indices.length }, () => Array(COLS).fill(null))
+  const empty = Array.from({ length: indices.length }, () => Array(cols).fill(null))
   return [...empty, ...kept]
 }
 
 // ─── Canvas rendering ─────────────────────────────────────────────────────────
 
-function drawCell(ctx, col, row, color, glow = false) {
-  const x = col * CELL + 2
-  const y = row * CELL + 2
-  const w = CELL - 4
-  const h = CELL - 4
-  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 14 }
+function drawCell(ctx, col, row, color, cell, glow = false) {
+  const x = col * cell + 2
+  const y = row * cell + 2
+  const w = cell - 4
+  const h = cell - 4
+  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 12 }
   ctx.fillStyle = color
   ctx.beginPath()
-  if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 4) } else { ctx.rect(x, y, w, h) }
+  if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 3) } else { ctx.rect(x, y, w, h) }
   ctx.fill()
-  // Top-edge highlight
-  ctx.fillStyle = "rgba(255,255,255,0.18)"
-  ctx.fillRect(x + 2, y + 2, w - 4, 3)
+  ctx.fillStyle = "rgba(255,255,255,0.16)"
+  ctx.fillRect(x + 2, y + 2, w - 4, Math.max(2, cell * 0.08))
   ctx.shadowBlur = 0
 }
 
-function renderCanvas(ctx, board, cur) {
-  const ROWS = board.length
-  const W = COLS * CELL
-  const H = ROWS * CELL
+function renderCanvas(ctx, board, cur, cols, cell) {
+  const rows = board.length
+  const W = cols * cell
+  const H = rows * cell
   ctx.clearRect(0, 0, W, H)
-  // Subtle grid
   ctx.strokeStyle = "rgba(255,255,255,0.025)"
   ctx.lineWidth = 1
-  for (let c = 0; c <= COLS; c++) {
-    ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, H); ctx.stroke()
+  for (let c = 0; c <= cols; c++) {
+    ctx.beginPath(); ctx.moveTo(c * cell, 0); ctx.lineTo(c * cell, H); ctx.stroke()
   }
-  for (let r = 0; r <= ROWS; r++) {
-    ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(W, r * CELL); ctx.stroke()
+  for (let r = 0; r <= rows; r++) {
+    ctx.beginPath(); ctx.moveTo(0, r * cell); ctx.lineTo(W, r * cell); ctx.stroke()
   }
   board.forEach((row, r) =>
-    row.forEach((color, c) => { if (color) drawCell(ctx, c, r, color) })
+    row.forEach((color, c) => { if (color) drawCell(ctx, c, r, color, cell) })
   )
   if (cur) {
     cur.shape.forEach((row, r) =>
-      row.forEach((cell, c) => { if (cell) drawCell(ctx, cur.x + c, cur.y + r, cur.color, true) })
+      row.forEach((c2, c) => { if (c2) drawCell(ctx, cur.x + c, cur.y + r, cur.color, cell, true) })
     )
   }
 }
 
 // ─── Game instance ────────────────────────────────────────────────────────────
 
-function startGame(canvas, tickMs) {
-  const ROWS = Math.ceil(canvas.height / CELL)
+function startGame(canvas, tickMs, cols, cell) {
+  const ROWS = Math.ceil(canvas.height / cell)
   const ctx  = canvas.getContext("2d")
-  let board  = emptyBoard(ROWS)
-  let cur    = randomPiece()
+  let board  = emptyBoard(ROWS, cols)
+  let cur    = randomPiece(cols)
   let busy   = false
 
-  renderCanvas(ctx, board, cur)
+  renderCanvas(ctx, board, cur, cols, cell)
 
   function spawnNext() {
-    const next = randomPiece()
-    if (!fits(board, next)) {
-      // Board full — sweep top→bottom then restart
+    const next = randomPiece(cols)
+    if (!fits(board, next, cols)) {
       busy = true
       let r = 0
       const sweep = setInterval(() => {
         if (r >= ROWS) {
           clearInterval(sweep)
-          board = emptyBoard(ROWS)
-          cur   = randomPiece()
+          board = emptyBoard(ROWS, cols)
+          cur   = randomPiece(cols)
           busy  = false
-          renderCanvas(ctx, board, cur)
+          renderCanvas(ctx, board, cur, cols, cell)
           return
         }
         board = board.map((row, i) =>
-          i === r ? row.map(() => "rgba(187,234,249,0.12)") : row
+          i === r ? row.map(() => "rgba(187,234,249,0.1)") : row
         )
-        renderCanvas(ctx, board, null)
+        renderCanvas(ctx, board, null, cols, cell)
         r++
       }, 28)
     } else {
       cur = next
-      renderCanvas(ctx, board, cur)
+      renderCanvas(ctx, board, cur, cols, cell)
     }
   }
 
   function tick() {
     if (busy) return
-    if (fits(board, cur, 0, 1)) {
+    if (fits(board, cur, cols, 0, 1)) {
       cur = { ...cur, y: cur.y + 1 }
-      renderCanvas(ctx, board, cur)
+      renderCanvas(ctx, board, cur, cols, cell)
     } else {
       const locked   = lockPiece(board, cur)
       const complete = getCompleteRows(locked)
@@ -331,9 +403,9 @@ function startGame(canvas, tickMs) {
         board = locked.map((row, i) =>
           complete.includes(i) ? row.map(() => FLASH_COLOR) : row
         )
-        renderCanvas(ctx, board, null)
+        renderCanvas(ctx, board, null, cols, cell)
         setTimeout(() => {
-          board = removeRows(locked, complete)
+          board = removeRows(locked, complete, cols)
           busy  = false
           spawnNext()
         }, 180)
@@ -416,14 +488,25 @@ export default function HoldPage({
     const rCanvas   = rightCanvasRef.current
     if (!container || !lCanvas || !rCanvas) return
 
-    const h = container.clientHeight || window.innerHeight
-    const w = COLS * CELL   // 420px per side
+    const vw = window.innerWidth
+    const h  = container.clientHeight || window.innerHeight
 
-    lCanvas.width  = w;  lCanvas.height = h
-    rCanvas.width  = w;  rCanvas.height = h
+    // Choose cols/cell based on viewport width
+    let cols, cell
+    if (vw < 768) {
+      cols = M_COLS; cell = M_CELL       // 66px per side on mobile
+    } else if (vw < 1024) {
+      cols = T_COLS; cell = T_CELL       // 208px per side on tablet
+    } else {
+      cols = D_COLS; cell = D_CELL       // 420px per side on desktop
+    }
 
-    const stopLeft  = startGame(lCanvas, TICK_L)
-    const stopRight = startGame(rCanvas, TICK_R)
+    const w = cols * cell
+    lCanvas.width = w;  lCanvas.height = h
+    rCanvas.width = w;  rCanvas.height = h
+
+    const stopLeft  = startGame(lCanvas, TICK_L, cols, cell)
+    const stopRight = startGame(rCanvas, TICK_R, cols, cell)
 
     return () => { stopLeft(); stopRight() }
   }, [])
@@ -444,14 +527,11 @@ export default function HoldPage({
   return (
     <div className="fp-hold" ref={containerRef}>
 
-      {/* Background Tetris — left and right, touching the content edges */}
       <canvas ref={leftCanvasRef}  className="fp-hold-canvas fp-hold-canvas-left" />
       <canvas ref={rightCanvasRef} className="fp-hold-canvas fp-hold-canvas-right" />
 
-      {/* Tight dark oval over the text area */}
       <div className="fp-hold-overlay" />
 
-      {/* Centred content */}
       <div className={`fp-hold-content${showContent ? " fp-hold-content--show" : ""}`}>
         <div className="fp-hold-logo"><StacktLogo size={34} /></div>
 
