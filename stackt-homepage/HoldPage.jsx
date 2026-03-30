@@ -28,42 +28,46 @@ const BASE_CSS = `
   }
 `
 
+// Layout is designed for a 1440px wide Framer frame.
+// Content occupies the centre ~560px; canvases fill immediately either side.
 const HOLD_CSS = `
   .fp-hold {
     position: relative;
-    width: 100%;
+    width: 1440px;
     height: 100vh;
     overflow: hidden;
     background: var(--charcoal);
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
-  /* Canvases sit behind everything */
+  /* Canvases pinned to bottom, placed right beside the centre content */
   .fp-hold-canvas {
     position: absolute;
     bottom: 0;
     z-index: 1;
     display: block;
   }
-  .fp-hold-canvas-left  { left: 0; }
-  .fp-hold-canvas-right { right: 0; }
+  /* Right edge of left canvas = centre − 290px */
+  .fp-hold-canvas-left  { right: calc(50% + 290px); }
+  /* Left edge of right canvas = centre + 290px */
+  .fp-hold-canvas-right { left:  calc(50% + 290px); }
 
-  /* Dark radial overlay — keeps centre readable, fades to transparent at edges */
+  /* Tight dark oval behind the text so blocks show clearly at the edges */
   .fp-hold-overlay {
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      ellipse 52% 80% at 50% 50%,
-      rgba(38,38,38,0.94) 25%,
-      rgba(38,38,38,0.60) 55%,
-      rgba(38,38,38,0.10) 80%,
+      ellipse 42% 72% at 50% 50%,
+      rgba(38,38,38,0.96) 28%,
+      rgba(38,38,38,0.60) 52%,
+      rgba(38,38,38,0.08) 72%,
       transparent 100%
     );
     z-index: 2;
     pointer-events: none;
   }
 
-  /* Centred content stack */
+  /* Centred content */
   .fp-hold-content {
     position: absolute;
     inset: 0;
@@ -99,17 +103,14 @@ const HOLD_CSS = `
   .fp-hold-heading {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 700;
-    font-size: clamp(26px, 3.6vw, 52px);
+    font-size: clamp(28px, 3.6vw, 52px);
     color: var(--primary);
     line-height: 1.08;
     letter-spacing: -0.025em;
     margin: 0 0 14px;
-    max-width: 600px;
+    max-width: 560px;
   }
-  .fp-hold-heading em {
-    font-style: normal;
-    color: var(--sky);
-  }
+  .fp-hold-heading em { font-style: normal; color: var(--sky); }
 
   .fp-hold-sub {
     font-family: 'JetBrains Mono', monospace;
@@ -123,7 +124,6 @@ const HOLD_CSS = `
     max-width: 380px;
   }
 
-  /* Form */
   .fp-hold-form {
     display: flex;
     gap: 10px;
@@ -143,7 +143,6 @@ const HOLD_CSS = `
     color: var(--primary);
     outline: none;
     transition: border-color 0.2s ease, background 0.2s ease;
-    backdrop-filter: blur(4px);
   }
   .fp-hold-input::placeholder { color: var(--tertiary); }
   .fp-hold-input:focus {
@@ -179,22 +178,24 @@ const HOLD_CSS = `
 
 // ─── Tetris constants ─────────────────────────────────────────────────────────
 
-const COLS    = 10    // columns per side panel
-const CELL    = 26    // px per cell
-const TICK_L  = 500   // left game tick ms
-const TICK_R  = 590   // right game tick ms (offset so sides feel independent)
+// Each side canvas is 14 cols × 30px = 420px wide, filling the space between
+// the centred text (~580px) and the 1440px frame edges.
+const COLS   = 14
+const CELL   = 30
+const TICK_L = 160   // fast — left side
+const TICK_R = 190   // slightly offset so sides feel independent
 
 const PIECES = [
   { shape: [[1,1,1,1]],         color: "#BBEAF9" },
   { shape: [[1,1],[1,1]],       color: "#EBFCFF" },
-  { shape: [[0,1,0],[1,1,1]],   color: "rgba(187,234,249,0.75)" },
+  { shape: [[0,1,0],[1,1,1]],   color: "rgba(187,234,249,0.78)" },
   { shape: [[0,1,1],[1,1,0]],   color: "#a8e4f6" },
   { shape: [[1,1,0],[0,1,1]],   color: "rgba(235,252,255,0.65)" },
   { shape: [[1,0],[1,0],[1,1]], color: "rgba(187,234,249,0.55)" },
   { shape: [[0,1],[0,1],[1,1]], color: "#cdf1fb" },
 ]
 
-const FLASH_COLOR = "rgba(240,240,242,0.9)"
+const FLASH_COLOR = "rgba(240,240,242,0.95)"
 
 // ─── Game logic ───────────────────────────────────────────────────────────────
 
@@ -244,13 +245,14 @@ function drawCell(ctx, col, row, color, glow = false) {
   const y = row * CELL + 2
   const w = CELL - 4
   const h = CELL - 4
-  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 12 }
+  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 14 }
   ctx.fillStyle = color
   ctx.beginPath()
-  if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 3) } else { ctx.rect(x, y, w, h) }
+  if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 4) } else { ctx.rect(x, y, w, h) }
   ctx.fill()
-  ctx.fillStyle = "rgba(255,255,255,0.15)"
-  ctx.fillRect(x + 2, y + 2, w - 4, 2)
+  // Top-edge highlight
+  ctx.fillStyle = "rgba(255,255,255,0.18)"
+  ctx.fillRect(x + 2, y + 2, w - 4, 3)
   ctx.shadowBlur = 0
 }
 
@@ -278,7 +280,7 @@ function renderCanvas(ctx, board, cur) {
   }
 }
 
-// ─── Reusable game instance ───────────────────────────────────────────────────
+// ─── Game instance ────────────────────────────────────────────────────────────
 
 function startGame(canvas, tickMs) {
   const ROWS = Math.ceil(canvas.height / CELL)
@@ -292,7 +294,7 @@ function startGame(canvas, tickMs) {
   function spawnNext() {
     const next = randomPiece()
     if (!fits(board, next)) {
-      // Board full — sweep from top to bottom then restart
+      // Board full — sweep top→bottom then restart
       busy = true
       let r = 0
       const sweep = setInterval(() => {
@@ -305,11 +307,11 @@ function startGame(canvas, tickMs) {
           return
         }
         board = board.map((row, i) =>
-          i === r ? row.map(() => "rgba(187,234,249,0.15)") : row
+          i === r ? row.map(() => "rgba(187,234,249,0.12)") : row
         )
         renderCanvas(ctx, board, null)
         r++
-      }, 30)
+      }, 28)
     } else {
       cur = next
       renderCanvas(ctx, board, cur)
@@ -334,7 +336,7 @@ function startGame(canvas, tickMs) {
           board = removeRows(locked, complete)
           busy  = false
           spawnNext()
-        }, 200)
+        }, 180)
       } else {
         board = locked
         spawnNext()
@@ -400,7 +402,6 @@ export default function HoldPage({
   const [email,       setEmail]       = useState("")
   const [formStatus,  setFormStatus]  = useState("idle")
 
-  // Inject styles
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
@@ -409,7 +410,6 @@ export default function HoldPage({
     return () => clearTimeout(t)
   }, [])
 
-  // Start both game instances
   useEffect(() => {
     const container = containerRef.current
     const lCanvas   = leftCanvasRef.current
@@ -417,7 +417,7 @@ export default function HoldPage({
     if (!container || !lCanvas || !rCanvas) return
 
     const h = container.clientHeight || window.innerHeight
-    const w = COLS * CELL
+    const w = COLS * CELL   // 420px per side
 
     lCanvas.width  = w;  lCanvas.height = h
     rCanvas.width  = w;  rCanvas.height = h
@@ -442,21 +442,18 @@ export default function HoldPage({
   }
 
   return (
-    <div className="fp-hold" ref={containerRef} style={{ width: "100%" }}>
+    <div className="fp-hold" ref={containerRef}>
 
-      {/* Background: two Tetris canvases */}
+      {/* Background Tetris — left and right, touching the content edges */}
       <canvas ref={leftCanvasRef}  className="fp-hold-canvas fp-hold-canvas-left" />
       <canvas ref={rightCanvasRef} className="fp-hold-canvas fp-hold-canvas-right" />
 
-      {/* Centre radial overlay for readability */}
+      {/* Tight dark oval over the text area */}
       <div className="fp-hold-overlay" />
 
       {/* Centred content */}
       <div className={`fp-hold-content${showContent ? " fp-hold-content--show" : ""}`}>
-
-        <div className="fp-hold-logo">
-          <StacktLogo size={34} />
-        </div>
+        <div className="fp-hold-logo"><StacktLogo size={34} /></div>
 
         <span className="fp-hold-eyebrow">{eyebrow}</span>
 
@@ -487,7 +484,6 @@ export default function HoldPage({
           {formStatus === "success" && successMessage}
           {formStatus === "error"   && "Something went wrong — please try again."}
         </div>
-
       </div>
     </div>
   )
