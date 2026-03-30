@@ -30,81 +30,81 @@ const BASE_CSS = `
 
 const HOLD_CSS = `
   .fp-hold {
-    display: flex;
+    position: relative;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background: var(--charcoal);
     font-family: 'Plus Jakarta Sans', sans-serif;
-    overflow: hidden;
   }
 
-  /* ── Left: game panel ── */
-  .fp-hold-game {
-    flex-shrink: 0;
+  /* Canvases sit behind everything */
+  .fp-hold-canvas {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    display: block;
+  }
+  .fp-hold-canvas-left  { left: 0; }
+  .fp-hold-canvas-right { right: 0; }
+
+  /* Dark radial overlay — keeps centre readable, fades to transparent at edges */
+  .fp-hold-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 52% 80% at 50% 50%,
+      rgba(38,38,38,0.94) 25%,
+      rgba(38,38,38,0.60) 55%,
+      rgba(38,38,38,0.10) 80%,
+      transparent 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Centred content stack */
+  .fp-hold-content {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    padding: 60px 40px 60px 64px;
-    position: relative;
-  }
-  .fp-hold-game-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 200;
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-top: 18px;
-    text-align: center;
-  }
-
-  /* ── Vertical divider ── */
-  .fp-hold-divider {
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--mid) 20%, var(--mid) 80%, transparent);
-    align-self: stretch;
-    margin: 60px 0;
-    flex-shrink: 0;
-  }
-
-  /* ── Right: content panel ── */
-  .fp-hold-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    padding: 60px 80px 60px 56px;
+    text-align: center;
+    z-index: 3;
+    padding: 40px 24px;
     opacity: 0;
-    transform: translateX(12px);
-    transition: opacity 0.9s ease, transform 0.9s ease;
+    transform: translateY(10px);
+    transition: opacity 1s ease, transform 1s ease;
   }
   .fp-hold-content--show {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
-  .fp-hold-logo { margin-bottom: 44px; }
+  .fp-hold-logo { margin-bottom: 32px; }
 
   .fp-hold-eyebrow {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 200;
     font-size: 10px;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--sky);
-    margin: 0 0 20px;
+    margin: 0 0 18px;
     display: block;
   }
 
   .fp-hold-heading {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 700;
-    font-size: clamp(28px, 3.8vw, 54px);
+    font-size: clamp(26px, 3.6vw, 52px);
     color: var(--primary);
     line-height: 1.08;
     letter-spacing: -0.025em;
-    margin: 0 0 18px;
+    margin: 0 0 14px;
+    max-width: 600px;
   }
   .fp-hold-heading em {
     font-style: normal;
@@ -114,27 +114,28 @@ const HOLD_CSS = `
   .fp-hold-sub {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 200;
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--tertiary);
-    margin: 0 0 48px;
+    margin: 0 0 40px;
     line-height: 1.9;
-    max-width: 400px;
+    max-width: 380px;
   }
 
-  /* ── Form ── */
+  /* Form */
   .fp-hold-form {
     display: flex;
     gap: 10px;
-    max-width: 440px;
-    margin-bottom: 16px;
+    width: 100%;
+    max-width: 420px;
+    margin-bottom: 14px;
   }
   .fp-hold-input {
     flex: 1;
-    height: 50px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--mid);
+    height: 48px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(65,65,73,0.9);
     border-radius: 10px;
     padding: 0 18px;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -142,14 +143,15 @@ const HOLD_CSS = `
     color: var(--primary);
     outline: none;
     transition: border-color 0.2s ease, background 0.2s ease;
+    backdrop-filter: blur(4px);
   }
   .fp-hold-input::placeholder { color: var(--tertiary); }
   .fp-hold-input:focus {
-    border-color: rgba(187,234,249,0.55);
-    background: rgba(255,255,255,0.06);
+    border-color: rgba(187,234,249,0.5);
+    background: rgba(255,255,255,0.07);
   }
   .fp-hold-btn {
-    height: 50px;
+    height: 48px;
     padding: 0 22px;
     background: var(--sky);
     border: none;
@@ -159,48 +161,36 @@ const HOLD_CSS = `
     font-size: 13px;
     color: var(--charcoal);
     white-space: nowrap;
-    transition: opacity 0.2s ease, transform 0.15s ease;
     cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.15s ease;
   }
   .fp-hold-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
   .fp-hold-btn:disabled { opacity: 0.45; }
 
   .fp-hold-status {
-    min-height: 20px;
+    min-height: 18px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.1em;
-    margin-bottom: 40px;
   }
   .fp-hold-status--success { color: var(--sky); }
   .fp-hold-status--error   { color: #ff7070; }
-
-  .fp-hold-footer {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 200;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.14);
-    margin-top: auto;
-    padding-top: 40px;
-  }
 `
 
 // ─── Tetris constants ─────────────────────────────────────────────────────────
 
-const COLS    = 8
-const ROWS    = 20
-const CELL    = 28
-const TICK_MS = 540
+const COLS    = 10    // columns per side panel
+const CELL    = 26    // px per cell
+const TICK_L  = 500   // left game tick ms
+const TICK_R  = 590   // right game tick ms (offset so sides feel independent)
 
 const PIECES = [
   { shape: [[1,1,1,1]],         color: "#BBEAF9" },
   { shape: [[1,1],[1,1]],       color: "#EBFCFF" },
-  { shape: [[0,1,0],[1,1,1]],   color: "rgba(187,234,249,0.8)" },
+  { shape: [[0,1,0],[1,1,1]],   color: "rgba(187,234,249,0.75)" },
   { shape: [[0,1,1],[1,1,0]],   color: "#a8e4f6" },
-  { shape: [[1,1,0],[0,1,1]],   color: "rgba(235,252,255,0.7)" },
-  { shape: [[1,0],[1,0],[1,1]], color: "rgba(187,234,249,0.6)" },
+  { shape: [[1,1,0],[0,1,1]],   color: "rgba(235,252,255,0.65)" },
+  { shape: [[1,0],[1,0],[1,1]], color: "rgba(187,234,249,0.55)" },
   { shape: [[0,1],[0,1],[1,1]], color: "#cdf1fb" },
 ]
 
@@ -208,8 +198,8 @@ const FLASH_COLOR = "rgba(240,240,242,0.9)"
 
 // ─── Game logic ───────────────────────────────────────────────────────────────
 
-function emptyBoard() {
-  return Array.from({ length: ROWS }, () => Array(COLS).fill(null))
+function emptyBoard(rows) {
+  return Array.from({ length: rows }, () => Array(COLS).fill(null))
 }
 
 function randomPiece() {
@@ -218,6 +208,7 @@ function randomPiece() {
 }
 
 function fits(board, piece, dx = 0, dy = 0) {
+  const ROWS = board.length
   return piece.shape.every((row, r) =>
     row.every((cell, c) => {
       if (!cell) return true
@@ -253,27 +244,23 @@ function drawCell(ctx, col, row, color, glow = false) {
   const y = row * CELL + 2
   const w = CELL - 4
   const h = CELL - 4
-
-  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 14 }
+  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 12 }
   ctx.fillStyle = color
   ctx.beginPath()
   if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 3) } else { ctx.rect(x, y, w, h) }
   ctx.fill()
-  // Top-edge highlight
-  ctx.fillStyle = "rgba(255,255,255,0.18)"
+  ctx.fillStyle = "rgba(255,255,255,0.15)"
   ctx.fillRect(x + 2, y + 2, w - 4, 2)
   ctx.shadowBlur = 0
 }
 
 function renderCanvas(ctx, board, cur) {
+  const ROWS = board.length
   const W = COLS * CELL
   const H = ROWS * CELL
-
-  ctx.fillStyle = "#1b1b1b"
-  ctx.fillRect(0, 0, W, H)
-
+  ctx.clearRect(0, 0, W, H)
   // Subtle grid
-  ctx.strokeStyle = "rgba(255,255,255,0.03)"
+  ctx.strokeStyle = "rgba(255,255,255,0.025)"
   ctx.lineWidth = 1
   for (let c = 0; c <= COLS; c++) {
     ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, H); ctx.stroke()
@@ -281,28 +268,87 @@ function renderCanvas(ctx, board, cur) {
   for (let r = 0; r <= ROWS; r++) {
     ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(W, r * CELL); ctx.stroke()
   }
-
   board.forEach((row, r) =>
     row.forEach((color, c) => { if (color) drawCell(ctx, c, r, color) })
   )
-
   if (cur) {
     cur.shape.forEach((row, r) =>
       row.forEach((cell, c) => { if (cell) drawCell(ctx, cur.x + c, cur.y + r, cur.color, true) })
     )
   }
+}
 
-  // Subtle bottom fade
-  const grad = ctx.createLinearGradient(0, H - CELL * 2, 0, H)
-  grad.addColorStop(0, "transparent")
-  grad.addColorStop(1, "rgba(27,27,27,0.5)")
-  ctx.fillStyle = grad
-  ctx.fillRect(0, H - CELL * 2, W, CELL * 2)
+// ─── Reusable game instance ───────────────────────────────────────────────────
+
+function startGame(canvas, tickMs) {
+  const ROWS = Math.ceil(canvas.height / CELL)
+  const ctx  = canvas.getContext("2d")
+  let board  = emptyBoard(ROWS)
+  let cur    = randomPiece()
+  let busy   = false
+
+  renderCanvas(ctx, board, cur)
+
+  function spawnNext() {
+    const next = randomPiece()
+    if (!fits(board, next)) {
+      // Board full — sweep from top to bottom then restart
+      busy = true
+      let r = 0
+      const sweep = setInterval(() => {
+        if (r >= ROWS) {
+          clearInterval(sweep)
+          board = emptyBoard(ROWS)
+          cur   = randomPiece()
+          busy  = false
+          renderCanvas(ctx, board, cur)
+          return
+        }
+        board = board.map((row, i) =>
+          i === r ? row.map(() => "rgba(187,234,249,0.15)") : row
+        )
+        renderCanvas(ctx, board, null)
+        r++
+      }, 30)
+    } else {
+      cur = next
+      renderCanvas(ctx, board, cur)
+    }
+  }
+
+  function tick() {
+    if (busy) return
+    if (fits(board, cur, 0, 1)) {
+      cur = { ...cur, y: cur.y + 1 }
+      renderCanvas(ctx, board, cur)
+    } else {
+      const locked   = lockPiece(board, cur)
+      const complete = getCompleteRows(locked)
+      if (complete.length) {
+        busy = true
+        board = locked.map((row, i) =>
+          complete.includes(i) ? row.map(() => FLASH_COLOR) : row
+        )
+        renderCanvas(ctx, board, null)
+        setTimeout(() => {
+          board = removeRows(locked, complete)
+          busy  = false
+          spawnNext()
+        }, 200)
+      } else {
+        board = locked
+        spawnNext()
+      }
+    }
+  }
+
+  const interval = setInterval(tick, tickMs)
+  return () => clearInterval(interval)
 }
 
 // ─── Stackt logo ─────────────────────────────────────────────────────────────
 
-function StacktLogo({ size = 38 }) {
+function StacktLogo({ size = 34 }) {
   return (
     <svg width={size} height={Math.round(size * 0.885)} viewBox="0 0 104 92" fill="none">
       <path d="M52 4 L100 22 L52 40 L4 22 Z"  fill="none" stroke="#f0f0f2" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round"/>
@@ -312,7 +358,7 @@ function StacktLogo({ size = 38 }) {
   )
 }
 
-// ─── ClickUp submission ───────────────────────────────────────────────────────
+// ─── ClickUp ─────────────────────────────────────────────────────────────────
 
 async function submitToClickUp(email, apiKey, listId) {
   if (!apiKey || !listId) {
@@ -343,103 +389,45 @@ export default function HoldPage({
   eyebrow        = "Coming Soon",
   buttonText     = "Join the waitlist",
   successMessage = "You're on the list. We'll be in touch.",
-  footerText     = "© 2026 Stackt Digital",
   clickupListId  = "901614241656",
   clickupApiKey  = "",
 }) {
-  const canvasRef = useRef(null)
-  const boardRef  = useRef(emptyBoard())
-  const curRef    = useRef(null)
-  const tickRef   = useRef(null)
-  const busyRef   = useRef(false)
+  const leftCanvasRef  = useRef(null)
+  const rightCanvasRef = useRef(null)
+  const containerRef   = useRef(null)
 
   const [showContent, setShowContent] = useState(false)
   const [email,       setEmail]       = useState("")
   const [formStatus,  setFormStatus]  = useState("idle")
 
-  // Inject styles + reveal content
+  // Inject styles
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
     injectStyles("fw-hold", HOLD_CSS)
-    const t = setTimeout(() => setShowContent(true), 300)
+    const t = setTimeout(() => setShowContent(true), 200)
     return () => clearTimeout(t)
   }, [])
 
-  // Game loop
+  // Start both game instances
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    canvas.width  = COLS * CELL
-    canvas.height = ROWS * CELL
-    const ctx = canvas.getContext("2d")
+    const container = containerRef.current
+    const lCanvas   = leftCanvasRef.current
+    const rCanvas   = rightCanvasRef.current
+    if (!container || !lCanvas || !rCanvas) return
 
-    curRef.current = randomPiece()
-    renderCanvas(ctx, boardRef.current, curRef.current)
+    const h = container.clientHeight || window.innerHeight
+    const w = COLS * CELL
 
-    function spawnNext() {
-      const next = randomPiece()
-      if (!fits(boardRef.current, next)) {
-        // Board full — sweep clear from bottom to top, then restart
-        busyRef.current = true
-        let r = ROWS - 1
-        const sweep = setInterval(() => {
-          if (r < 0) {
-            clearInterval(sweep)
-            boardRef.current = emptyBoard()
-            curRef.current   = randomPiece()
-            busyRef.current  = false
-            renderCanvas(ctx, boardRef.current, curRef.current)
-            return
-          }
-          boardRef.current = boardRef.current.map((row, i) =>
-            i === r ? row.map(() => "rgba(187,234,249,0.18)") : row
-          )
-          renderCanvas(ctx, boardRef.current, null)
-          r--
-        }, 38)
-      } else {
-        curRef.current = next
-        renderCanvas(ctx, boardRef.current, curRef.current)
-      }
-    }
+    lCanvas.width  = w;  lCanvas.height = h
+    rCanvas.width  = w;  rCanvas.height = h
 
-    function tick() {
-      if (busyRef.current) return
-      const cur = curRef.current
-      if (!cur) return
+    const stopLeft  = startGame(lCanvas, TICK_L)
+    const stopRight = startGame(rCanvas, TICK_R)
 
-      if (fits(boardRef.current, cur, 0, 1)) {
-        curRef.current = { ...cur, y: cur.y + 1 }
-        renderCanvas(ctx, boardRef.current, curRef.current)
-      } else {
-        const locked   = lockPiece(boardRef.current, cur)
-        const complete = getCompleteRows(locked)
-
-        if (complete.length) {
-          busyRef.current = true
-          // Flash completed rows
-          boardRef.current = locked.map((row, i) =>
-            complete.includes(i) ? row.map(() => FLASH_COLOR) : row
-          )
-          renderCanvas(ctx, boardRef.current, null)
-          setTimeout(() => {
-            boardRef.current = removeRows(locked, complete)
-            busyRef.current  = false
-            spawnNext()
-          }, 220)
-        } else {
-          boardRef.current = locked
-          spawnNext()
-        }
-      }
-    }
-
-    tickRef.current = setInterval(tick, TICK_MS)
-    return () => clearInterval(tickRef.current)
+    return () => { stopLeft(); stopRight() }
   }, [])
 
-  // Form submit
   async function handleSubmit(e) {
     e.preventDefault()
     if (!email.trim() || formStatus === "loading" || formStatus === "success") return
@@ -454,29 +442,20 @@ export default function HoldPage({
   }
 
   return (
-    <div className="fp-hold" style={{ width: "100%" }}>
+    <div className="fp-hold" ref={containerRef} style={{ width: "100%" }}>
 
-      {/* Left: Tetris */}
-      <div className="fp-hold-game">
-        <canvas
-          ref={canvasRef}
-          style={{
-            display: "block",
-            borderRadius: 6,
-            boxShadow: "0 0 60px rgba(187,234,249,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)",
-          }}
-        />
-        <p className="fp-hold-game-label">Building your stack</p>
-      </div>
+      {/* Background: two Tetris canvases */}
+      <canvas ref={leftCanvasRef}  className="fp-hold-canvas fp-hold-canvas-left" />
+      <canvas ref={rightCanvasRef} className="fp-hold-canvas fp-hold-canvas-right" />
 
-      {/* Divider */}
-      <div className="fp-hold-divider" />
+      {/* Centre radial overlay for readability */}
+      <div className="fp-hold-overlay" />
 
-      {/* Right: content */}
+      {/* Centred content */}
       <div className={`fp-hold-content${showContent ? " fp-hold-content--show" : ""}`}>
 
         <div className="fp-hold-logo">
-          <StacktLogo size={38} />
+          <StacktLogo size={34} />
         </div>
 
         <span className="fp-hold-eyebrow">{eyebrow}</span>
@@ -509,7 +488,6 @@ export default function HoldPage({
           {formStatus === "error"   && "Something went wrong — please try again."}
         </div>
 
-        <p className="fp-hold-footer">{footerText}</p>
       </div>
     </div>
   )
@@ -524,7 +502,6 @@ addPropertyControls(HoldPage, {
   eyebrow:        { type: ControlType.String, title: "Eyebrow",         defaultValue: "Coming Soon" },
   buttonText:     { type: ControlType.String, title: "Button Text",     defaultValue: "Join the waitlist" },
   successMessage: { type: ControlType.String, title: "Success Message", defaultValue: "You're on the list. We'll be in touch." },
-  footerText:     { type: ControlType.String, title: "Footer",          defaultValue: "© 2026 Stackt Digital" },
   clickupListId:  { type: ControlType.String, title: "ClickUp List ID", defaultValue: "901614241656" },
   clickupApiKey:  { type: ControlType.String, title: "ClickUp API Key", defaultValue: "" },
 })
