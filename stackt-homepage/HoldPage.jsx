@@ -6,107 +6,86 @@ import { addPropertyControls, ControlType } from "framer"
 function injectFonts() {
   if (document.getElementById("fw-fonts")) return
   const l = document.createElement("link")
-  l.id = "fw-fonts"
-  l.rel = "stylesheet"
-  l.href =
-    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@200;400&display=swap"
+  l.id = "fw-fonts"; l.rel = "stylesheet"
+  l.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@200;400&display=swap"
   document.head.appendChild(l)
 }
 
 function injectStyles(id, css) {
   if (document.getElementById(id)) return
   const s = document.createElement("style")
-  s.id = id
-  s.textContent = css
+  s.id = id; s.textContent = css
   document.head.appendChild(s)
 }
-
-// ─── Stackt cursor SVG ───────────────────────────────────────────────────────
-
-const CURSOR_URI = (() => {
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="28" viewBox="0 0 104 92">` +
-    `<path d="M52 4 L100 22 L52 40 L4 22 Z" fill="none" stroke="#f0f0f2" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>` +
-    `<path d="M52 30 L100 48 L52 66 L4 48 Z" fill="none" stroke="#f0f0f2" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>` +
-    `<path d="M52 56 L100 74 L52 92 L4 74 Z" fill="none" stroke="#f0f0f2" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>` +
-    `</svg>`
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`
-})()
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const BASE_CSS = `
   :root {
-    --charcoal: #262626;
-    --stone:    #FAFAFA;
-    --powder:   #EBFCFF;
-    --sky:      #BBEAF9;
-    --mid:      #414149;
-    --tertiary: #84848f;
-    --secondary:#a9a9b1;
-    --primary:  #f0f0f2;
+    --charcoal: #262626; --stone: #FAFAFA; --powder: #EBFCFF;
+    --sky: #BBEAF9; --mid: #414149; --tertiary: #84848f;
+    --secondary: #a9a9b1; --primary: #f0f0f2;
   }
 `
 
 const HOLD_CSS = `
-  /* Custom cursor across entire page */
-  .fp-hold,
-  .fp-hold * {
-    cursor: url("${CURSOR_URI}") 15 13, auto !important;
-  }
-
-  /* ── Shell ── */
   .fp-hold {
-    position: relative;
+    display: flex;
     width: 100%;
     min-height: 100vh;
     background: var(--charcoal);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow: hidden;
   }
 
-  /* ── Canvas static overlay ── */
-  .fp-hold-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 20;
-    pointer-events: none;
-    transition: opacity 0.9s ease;
-  }
-
-  /* ── Content ── */
-  .fp-hold-content {
-    position: relative;
-    z-index: 5;
+  /* ── Left: game panel ── */
+  .fp-hold-game {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
+    padding: 60px 40px 60px 64px;
+    position: relative;
+  }
+  .fp-hold-game-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 200;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 18px;
     text-align: center;
-    padding: 60px 40px;
-    max-width: 680px;
-    width: 100%;
+  }
+
+  /* ── Vertical divider ── */
+  .fp-hold-divider {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--mid) 20%, var(--mid) 80%, transparent);
+    align-self: stretch;
+    margin: 60px 0;
+    flex-shrink: 0;
+  }
+
+  /* ── Right: content panel ── */
+  .fp-hold-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px 60px 56px;
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateX(12px);
     transition: opacity 0.9s ease, transform 0.9s ease;
   }
   .fp-hold-content--show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 
-  /* ── Logo ── */
-  .fp-hold-logo {
-    margin-bottom: 52px;
-    opacity: 0.9;
-  }
+  .fp-hold-logo { margin-bottom: 44px; }
 
-  /* ── Eyebrow ── */
   .fp-hold-eyebrow {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 200;
@@ -114,14 +93,14 @@ const HOLD_CSS = `
     letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--sky);
-    margin: 0 0 24px;
+    margin: 0 0 20px;
+    display: block;
   }
 
-  /* ── Heading ── */
   .fp-hold-heading {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 700;
-    font-size: clamp(28px, 4.5vw, 58px);
+    font-size: clamp(28px, 3.8vw, 54px);
     color: var(--primary);
     line-height: 1.08;
     letter-spacing: -0.025em;
@@ -132,44 +111,24 @@ const HOLD_CSS = `
     color: var(--sky);
   }
 
-  /* ── Sub ── */
   .fp-hold-sub {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 200;
     font-size: 12px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--tertiary);
-    margin: 0 0 52px;
-    line-height: 1.8;
-  }
-
-  /* ── Building block loader ── */
-  .fp-hold-blocks {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 52px;
-  }
-  .fp-hold-block {
-    width: 14px;
-    height: 9px;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.07);
-    transition: background 0.12s ease, box-shadow 0.12s ease;
-  }
-  .fp-hold-block--on {
-    background: var(--sky);
-    box-shadow: 0 0 8px rgba(187,234,249,0.45);
+    margin: 0 0 48px;
+    line-height: 1.9;
+    max-width: 400px;
   }
 
   /* ── Form ── */
   .fp-hold-form {
     display: flex;
     gap: 10px;
-    width: 100%;
-    max-width: 460px;
-    margin-bottom: 20px;
+    max-width: 440px;
+    margin-bottom: 16px;
   }
   .fp-hold-input {
     flex: 1;
@@ -191,108 +150,164 @@ const HOLD_CSS = `
   }
   .fp-hold-btn {
     height: 50px;
-    padding: 0 24px;
+    padding: 0 22px;
     background: var(--sky);
     border: none;
     border-radius: 10px;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 13px;
     color: var(--charcoal);
     white-space: nowrap;
     transition: opacity 0.2s ease, transform 0.15s ease;
+    cursor: pointer;
   }
-  .fp-hold-btn:hover:not(:disabled) {
-    opacity: 0.85;
-    transform: translateY(-1px);
-  }
+  .fp-hold-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
   .fp-hold-btn:disabled { opacity: 0.45; }
 
-  /* ── Status ── */
   .fp-hold-status {
     min-height: 20px;
-    margin-bottom: 32px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.1em;
+    margin-bottom: 40px;
   }
   .fp-hold-status--success { color: var(--sky); }
   .fp-hold-status--error   { color: #ff7070; }
 
-  /* ── Footer ── */
   .fp-hold-footer {
-    position: absolute;
-    bottom: 36px;
-    left: 0; right: 0;
-    text-align: center;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 200;
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.14);
-    z-index: 5;
-  }
-
-  /* ── Scan-line overlay ── */
-  .fp-hold-scan {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.06) 2px,
-      rgba(0,0,0,0.06) 4px
-    );
+    margin-top: auto;
+    padding-top: 40px;
   }
 `
 
-// ─── Constants ───────────────────────────────────────────────────────────────
+// ─── Tetris constants ─────────────────────────────────────────────────────────
 
-const BLOCK_COUNT    = 22
-const BLOCK_STEP_MS  = 95   // ms per block fill
-const BLOCK_PAUSE_MS = 600  // pause when fully filled before reset
-const STATIC_HOLD_MS = 1600 // how long static plays before fading
-const REVEAL_MS      = 500  // delay after static fades before content appears
+const COLS    = 8
+const ROWS    = 20
+const CELL    = 28
+const TICK_MS = 540
 
-// ─── Stackt logo SVG (inline, for page branding) ─────────────────────────────
+const PIECES = [
+  { shape: [[1,1,1,1]],         color: "#BBEAF9" },
+  { shape: [[1,1],[1,1]],       color: "#EBFCFF" },
+  { shape: [[0,1,0],[1,1,1]],   color: "rgba(187,234,249,0.8)" },
+  { shape: [[0,1,1],[1,1,0]],   color: "#a8e4f6" },
+  { shape: [[1,1,0],[0,1,1]],   color: "rgba(235,252,255,0.7)" },
+  { shape: [[1,0],[1,0],[1,1]], color: "rgba(187,234,249,0.6)" },
+  { shape: [[0,1],[0,1],[1,1]], color: "#cdf1fb" },
+]
 
-function StacktLogo({ size = 42 }) {
+const FLASH_COLOR = "rgba(240,240,242,0.9)"
+
+// ─── Game logic ───────────────────────────────────────────────────────────────
+
+function emptyBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(null))
+}
+
+function randomPiece() {
+  const p = PIECES[Math.floor(Math.random() * PIECES.length)]
+  return { shape: p.shape, color: p.color, x: Math.floor((COLS - p.shape[0].length) / 2), y: 0 }
+}
+
+function fits(board, piece, dx = 0, dy = 0) {
+  return piece.shape.every((row, r) =>
+    row.every((cell, c) => {
+      if (!cell) return true
+      const nx = piece.x + c + dx
+      const ny = piece.y + r + dy
+      return nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && !board[ny][nx]
+    })
+  )
+}
+
+function lockPiece(board, piece) {
+  const b = board.map(r => [...r])
+  piece.shape.forEach((row, r) =>
+    row.forEach((cell, c) => { if (cell) b[piece.y + r][piece.x + c] = piece.color })
+  )
+  return b
+}
+
+function getCompleteRows(board) {
+  return board.reduce((acc, row, i) => (row.every(Boolean) ? [...acc, i] : acc), [])
+}
+
+function removeRows(board, indices) {
+  const kept  = board.filter((_, i) => !indices.includes(i))
+  const empty = Array.from({ length: indices.length }, () => Array(COLS).fill(null))
+  return [...empty, ...kept]
+}
+
+// ─── Canvas rendering ─────────────────────────────────────────────────────────
+
+function drawCell(ctx, col, row, color, glow = false) {
+  const x = col * CELL + 2
+  const y = row * CELL + 2
+  const w = CELL - 4
+  const h = CELL - 4
+
+  if (glow) { ctx.shadowColor = "#BBEAF9"; ctx.shadowBlur = 14 }
+  ctx.fillStyle = color
+  ctx.beginPath()
+  if (ctx.roundRect) { ctx.roundRect(x, y, w, h, 3) } else { ctx.rect(x, y, w, h) }
+  ctx.fill()
+  // Top-edge highlight
+  ctx.fillStyle = "rgba(255,255,255,0.18)"
+  ctx.fillRect(x + 2, y + 2, w - 4, 2)
+  ctx.shadowBlur = 0
+}
+
+function renderCanvas(ctx, board, cur) {
+  const W = COLS * CELL
+  const H = ROWS * CELL
+
+  ctx.fillStyle = "#1b1b1b"
+  ctx.fillRect(0, 0, W, H)
+
+  // Subtle grid
+  ctx.strokeStyle = "rgba(255,255,255,0.03)"
+  ctx.lineWidth = 1
+  for (let c = 0; c <= COLS; c++) {
+    ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, H); ctx.stroke()
+  }
+  for (let r = 0; r <= ROWS; r++) {
+    ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(W, r * CELL); ctx.stroke()
+  }
+
+  board.forEach((row, r) =>
+    row.forEach((color, c) => { if (color) drawCell(ctx, c, r, color) })
+  )
+
+  if (cur) {
+    cur.shape.forEach((row, r) =>
+      row.forEach((cell, c) => { if (cell) drawCell(ctx, cur.x + c, cur.y + r, cur.color, true) })
+    )
+  }
+
+  // Subtle bottom fade
+  const grad = ctx.createLinearGradient(0, H - CELL * 2, 0, H)
+  grad.addColorStop(0, "transparent")
+  grad.addColorStop(1, "rgba(27,27,27,0.5)")
+  ctx.fillStyle = grad
+  ctx.fillRect(0, H - CELL * 2, W, CELL * 2)
+}
+
+// ─── Stackt logo ─────────────────────────────────────────────────────────────
+
+function StacktLogo({ size = 38 }) {
   return (
-    <svg
-      width={size}
-      height={Math.round(size * 0.885)}
-      viewBox="0 0 104 92"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M52 4 L100 22 L52 40 L4 22 Z"
-        fill="none"
-        stroke="#f0f0f2"
-        strokeWidth="7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <path
-        d="M52 30 L100 48 L52 66 L4 48 Z"
-        fill="none"
-        stroke="#f0f0f2"
-        strokeWidth="7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <path
-        d="M52 56 L100 74 L52 92 L4 74 Z"
-        fill="none"
-        stroke="#f0f0f2"
-        strokeWidth="7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
+    <svg width={size} height={Math.round(size * 0.885)} viewBox="0 0 104 92" fill="none">
+      <path d="M52 4 L100 22 L52 40 L4 22 Z"  fill="none" stroke="#f0f0f2" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round"/>
+      <path d="M52 30 L100 48 L52 66 L4 48 Z"  fill="none" stroke="#f0f0f2" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round"/>
+      <path d="M52 56 L100 74 L52 92 L4 74 Z"  fill="none" stroke="#f0f0f2" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -301,16 +316,12 @@ function StacktLogo({ size = 42 }) {
 
 async function submitToClickUp(email, apiKey, listId) {
   if (!apiKey || !listId) {
-    // No credentials — log and resolve (for Framer preview testing)
-    console.info("[HoldPage] ClickUp API key or List ID not set. Submission skipped.")
+    console.info("[HoldPage] ClickUp credentials not set — submission skipped.")
     return
   }
   const res = await fetch(`https://api.clickup.com/api/v2/list/${listId}/task`, {
     method: "POST",
-    headers: {
-      Authorization: apiKey,
-      "Content-Type": "application/json",
-    },
+    headers: { Authorization: apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({
       name: `Waitlist: ${email}`,
       description: `Email: ${email}\nSubmitted: ${new Date().toLocaleString()}`,
@@ -326,115 +337,109 @@ async function submitToClickUp(email, apiKey, listId) {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HoldPage({
-  headingLine1    = "Your value stack is",
-  headingAccent   = "launching soon.",
-  subText         = "Something extraordinary is being assembled.",
-  eyebrow         = "Coming Soon",
-  buttonText      = "Join the waitlist",
-  successMessage  = "You're on the list. We'll be in touch.",
-  footerText      = "© 2026 Stackt Digital",
-  clickupListId   = "901614241656",
-  clickupApiKey   = "",
+  headingLine1   = "Your value stack is",
+  headingAccent  = "launching soon.",
+  subText        = "Every great stack starts with the right foundations.",
+  eyebrow        = "Coming Soon",
+  buttonText     = "Join the waitlist",
+  successMessage = "You're on the list. We'll be in touch.",
+  footerText     = "© 2026 Stackt Digital",
+  clickupListId  = "901614241656",
+  clickupApiKey  = "",
 }) {
-  const canvasRef  = useRef(null)
-  const rafRef     = useRef(null)
-  const timersRef  = useRef([])
-  const blockTimer = useRef(null)
+  const canvasRef = useRef(null)
+  const boardRef  = useRef(emptyBoard())
+  const curRef    = useRef(null)
+  const tickRef   = useRef(null)
+  const busyRef   = useRef(false)
 
-  const [canvasOpacity, setCanvasOpacity] = useState(1)
-  const [showContent,   setShowContent]   = useState(false)
-  const [blocks,        setBlocks]        = useState(0)
-  const [email,         setEmail]         = useState("")
-  const [formStatus,    setFormStatus]    = useState("idle") // idle | loading | success | error
+  const [showContent, setShowContent] = useState(false)
+  const [email,       setEmail]       = useState("")
+  const [formStatus,  setFormStatus]  = useState("idle")
 
-  // ── Inject styles ──
+  // Inject styles + reveal content
   useEffect(() => {
     injectFonts()
     injectStyles("fw-base", BASE_CSS)
     injectStyles("fw-hold", HOLD_CSS)
+    const t = setTimeout(() => setShowContent(true), 300)
+    return () => clearTimeout(t)
   }, [])
 
-  // ── Canvas static noise ──
+  // Game loop
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    canvas.width  = COLS * CELL
+    canvas.height = ROWS * CELL
+    const ctx = canvas.getContext("2d")
 
-    const SCALE = 4 // draw at ¼ resolution — chunky static look
-    const ctx   = canvas.getContext("2d")
+    curRef.current = randomPiece()
+    renderCanvas(ctx, boardRef.current, curRef.current)
 
-    function resize() {
-      canvas.width  = Math.ceil(canvas.offsetWidth  / SCALE)
-      canvas.height = Math.ceil(canvas.offsetHeight / SCALE)
-    }
-    resize()
-
-    let frame = 0
-    function draw() {
-      if (!canvas) return
-      const w = canvas.width
-      const h = canvas.height
-      const imageData = ctx.createImageData(w, h)
-      const d = imageData.data
-      for (let i = 0; i < d.length; i += 4) {
-        const v = (Math.random() * 255) | 0
-        d[i] = d[i + 1] = d[i + 2] = v
-        d[i + 3] = 210
+    function spawnNext() {
+      const next = randomPiece()
+      if (!fits(boardRef.current, next)) {
+        // Board full — sweep clear from bottom to top, then restart
+        busyRef.current = true
+        let r = ROWS - 1
+        const sweep = setInterval(() => {
+          if (r < 0) {
+            clearInterval(sweep)
+            boardRef.current = emptyBoard()
+            curRef.current   = randomPiece()
+            busyRef.current  = false
+            renderCanvas(ctx, boardRef.current, curRef.current)
+            return
+          }
+          boardRef.current = boardRef.current.map((row, i) =>
+            i === r ? row.map(() => "rgba(187,234,249,0.18)") : row
+          )
+          renderCanvas(ctx, boardRef.current, null)
+          r--
+        }, 38)
+      } else {
+        curRef.current = next
+        renderCanvas(ctx, boardRef.current, curRef.current)
       }
-      ctx.putImageData(imageData, 0, 0)
-      frame++
-      rafRef.current = requestAnimationFrame(draw)
     }
-
-    draw()
-
-    // After STATIC_HOLD_MS, fade canvas out
-    const t1 = setTimeout(() => {
-      cancelAnimationFrame(rafRef.current)
-      setCanvasOpacity(0)
-
-      // After fade, show content
-      const t2 = setTimeout(() => setShowContent(true), REVEAL_MS)
-      timersRef.current.push(t2)
-    }, STATIC_HOLD_MS)
-
-    timersRef.current.push(t1)
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      timersRef.current.forEach(clearTimeout)
-    }
-  }, [])
-
-  // ── Building block loader (starts when content reveals) ──
-  useEffect(() => {
-    if (!showContent) return
-
-    let current = 0
-    let pausing = false
 
     function tick() {
-      if (pausing) return
-      current++
-      if (current > BLOCK_COUNT) {
-        pausing = true
-        setBlocks(BLOCK_COUNT)
-        blockTimer.current = setTimeout(() => {
-          current = 0
-          pausing = false
-          setBlocks(0)
-          blockTimer.current = setTimeout(tick, BLOCK_STEP_MS)
-        }, BLOCK_PAUSE_MS)
-        return
+      if (busyRef.current) return
+      const cur = curRef.current
+      if (!cur) return
+
+      if (fits(boardRef.current, cur, 0, 1)) {
+        curRef.current = { ...cur, y: cur.y + 1 }
+        renderCanvas(ctx, boardRef.current, curRef.current)
+      } else {
+        const locked   = lockPiece(boardRef.current, cur)
+        const complete = getCompleteRows(locked)
+
+        if (complete.length) {
+          busyRef.current = true
+          // Flash completed rows
+          boardRef.current = locked.map((row, i) =>
+            complete.includes(i) ? row.map(() => FLASH_COLOR) : row
+          )
+          renderCanvas(ctx, boardRef.current, null)
+          setTimeout(() => {
+            boardRef.current = removeRows(locked, complete)
+            busyRef.current  = false
+            spawnNext()
+          }, 220)
+        } else {
+          boardRef.current = locked
+          spawnNext()
+        }
       }
-      setBlocks(current)
-      blockTimer.current = setTimeout(tick, BLOCK_STEP_MS)
     }
 
-    blockTimer.current = setTimeout(tick, BLOCK_STEP_MS)
-    return () => clearTimeout(blockTimer.current)
-  }, [showContent])
+    tickRef.current = setInterval(tick, TICK_MS)
+    return () => clearInterval(tickRef.current)
+  }, [])
 
-  // ── Form submit ──
+  // Form submit
   async function handleSubmit(e) {
     e.preventDefault()
     if (!email.trim() || formStatus === "loading" || formStatus === "success") return
@@ -443,54 +448,46 @@ export default function HoldPage({
       await submitToClickUp(email.trim(), clickupApiKey, clickupListId)
       setFormStatus("success")
     } catch (err) {
-      console.error("[HoldPage] ClickUp error:", err)
+      console.error("[HoldPage]", err)
       setFormStatus("error")
     }
   }
 
   return (
     <div className="fp-hold" style={{ width: "100%" }}>
-      {/* Scan-line texture */}
-      <div className="fp-hold-scan" />
 
-      {/* Static noise canvas */}
-      <canvas
-        ref={canvasRef}
-        className="fp-hold-canvas"
-        style={{ opacity: canvasOpacity, imageRendering: "pixelated" }}
-      />
+      {/* Left: Tetris */}
+      <div className="fp-hold-game">
+        <canvas
+          ref={canvasRef}
+          style={{
+            display: "block",
+            borderRadius: 6,
+            boxShadow: "0 0 60px rgba(187,234,249,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)",
+          }}
+        />
+        <p className="fp-hold-game-label">Building your stack</p>
+      </div>
 
-      {/* Main content */}
+      {/* Divider */}
+      <div className="fp-hold-divider" />
+
+      {/* Right: content */}
       <div className={`fp-hold-content${showContent ? " fp-hold-content--show" : ""}`}>
 
-        {/* Logo */}
         <div className="fp-hold-logo">
-          <StacktLogo size={44} />
+          <StacktLogo size={38} />
         </div>
 
-        {/* Eyebrow */}
-        <p className="fp-hold-eyebrow">{eyebrow}</p>
+        <span className="fp-hold-eyebrow">{eyebrow}</span>
 
-        {/* Heading */}
         <h1 className="fp-hold-heading">
-          {headingLine1} <em>{headingAccent}</em>
+          {headingLine1}&nbsp;<em>{headingAccent}</em>
         </h1>
 
-        {/* Sub */}
         <p className="fp-hold-sub">{subText}</p>
 
-        {/* Building block loader */}
-        <div className="fp-hold-blocks">
-          {Array.from({ length: BLOCK_COUNT }).map((_, i) => (
-            <div
-              key={i}
-              className={`fp-hold-block${i < blocks ? " fp-hold-block--on" : ""}`}
-            />
-          ))}
-        </div>
-
-        {/* Waitlist form */}
-        {formStatus !== "success" ? (
+        {formStatus !== "success" && (
           <form className="fp-hold-form" onSubmit={handleSubmit}>
             <input
               type="email"
@@ -501,76 +498,33 @@ export default function HoldPage({
               required
               disabled={formStatus === "loading"}
             />
-            <button
-              type="submit"
-              className="fp-hold-btn"
-              disabled={formStatus === "loading"}
-            >
+            <button type="submit" className="fp-hold-btn" disabled={formStatus === "loading"}>
               {formStatus === "loading" ? "Adding…" : buttonText}
             </button>
           </form>
-        ) : null}
+        )}
 
-        {/* Status messages */}
         <div className={`fp-hold-status fp-hold-status--${formStatus}`}>
           {formStatus === "success" && successMessage}
           {formStatus === "error"   && "Something went wrong — please try again."}
         </div>
 
+        <p className="fp-hold-footer">{footerText}</p>
       </div>
-
-      {/* Footer */}
-      <p className="fp-hold-footer">{footerText}</p>
     </div>
   )
 }
 
-// ─── Framer property controls ─────────────────────────────────────────────────
+// ─── Framer controls ─────────────────────────────────────────────────────────
 
 addPropertyControls(HoldPage, {
-  headingLine1: {
-    type: ControlType.String,
-    title: "Heading",
-    defaultValue: "Your value stack is",
-  },
-  headingAccent: {
-    type: ControlType.String,
-    title: "Heading Accent",
-    defaultValue: "launching soon.",
-  },
-  subText: {
-    type: ControlType.String,
-    title: "Sub Text",
-    defaultValue: "Something extraordinary is being assembled.",
-  },
-  eyebrow: {
-    type: ControlType.String,
-    title: "Eyebrow",
-    defaultValue: "Coming Soon",
-  },
-  buttonText: {
-    type: ControlType.String,
-    title: "Button Text",
-    defaultValue: "Join the waitlist",
-  },
-  successMessage: {
-    type: ControlType.String,
-    title: "Success Message",
-    defaultValue: "You're on the list. We'll be in touch.",
-  },
-  footerText: {
-    type: ControlType.String,
-    title: "Footer Text",
-    defaultValue: "© 2026 Stackt Digital",
-  },
-  clickupListId: {
-    type: ControlType.String,
-    title: "ClickUp List ID",
-    defaultValue: "901614241656",
-  },
-  clickupApiKey: {
-    type: ControlType.String,
-    title: "ClickUp API Key",
-    defaultValue: "",
-  },
+  headingLine1:   { type: ControlType.String, title: "Heading",         defaultValue: "Your value stack is" },
+  headingAccent:  { type: ControlType.String, title: "Heading Accent",  defaultValue: "launching soon." },
+  subText:        { type: ControlType.String, title: "Sub Text",        defaultValue: "Every great stack starts with the right foundations." },
+  eyebrow:        { type: ControlType.String, title: "Eyebrow",         defaultValue: "Coming Soon" },
+  buttonText:     { type: ControlType.String, title: "Button Text",     defaultValue: "Join the waitlist" },
+  successMessage: { type: ControlType.String, title: "Success Message", defaultValue: "You're on the list. We'll be in touch." },
+  footerText:     { type: ControlType.String, title: "Footer",          defaultValue: "© 2026 Stackt Digital" },
+  clickupListId:  { type: ControlType.String, title: "ClickUp List ID", defaultValue: "901614241656" },
+  clickupApiKey:  { type: ControlType.String, title: "ClickUp API Key", defaultValue: "" },
 })
