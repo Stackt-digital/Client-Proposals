@@ -184,6 +184,7 @@ export default function CTA({
   headingAccent = "did not today.",
   bodyText = "Let us get the right tier locked in, confirm the scope and kick off your first 90-day block. The sooner we start, the sooner it compounds.",
   primaryButtonText = "Let us get started",
+  primaryButtonUrl = "",
   secondaryButtonText = "Ask a question",
   contactEmail = "lauren@stackt.digital",
   backgroundImage,
@@ -219,7 +220,12 @@ export default function CTA({
         <p className="fp-cta-body">{bodyText}</p>
 
         <div className="fp-cta-buttons">
-          <a href={`mailto:${contactEmail}`} className="fp-cta-btn-primary">
+          <a
+            href={primaryButtonUrl || `mailto:${contactEmail}`}
+            target={primaryButtonUrl ? "_blank" : undefined}
+            rel={primaryButtonUrl ? "noopener noreferrer" : undefined}
+            className="fp-cta-btn-primary"
+          >
             {primaryButtonText}
           </a>
           <a href={`mailto:${contactEmail}`} className="fp-cta-btn-secondary">
@@ -271,6 +277,11 @@ addPropertyControls(CTA, {
     type: ControlType.String,
     title: "Primary Button Text",
     defaultValue: "Let us get started",
+  },
+  primaryButtonUrl: {
+    type: ControlType.String,
+    title: "Primary Button URL",
+    defaultValue: "",
   },
   secondaryButtonText: {
     type: ControlType.String,
