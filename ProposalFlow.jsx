@@ -1040,10 +1040,10 @@ const DEFAULT_AGREEMENT_CLAUSES = [
 
 // ── Sub-components ──────────────────────────────────────────────────────────
 
-function Nav({ step, onBack, clientName, contactEmail }) {
+function Nav({ navLogo, clientName, contactEmail }) {
   return (
     <nav className="pf-nav">
-      <span className="pf-nav-logo">Stackt</span>
+      <span className="pf-nav-logo">{navLogo}</span>
       <span className="pf-nav-meta">
         {clientName} · {contactEmail}
       </span>
@@ -1066,7 +1066,7 @@ function ProgressDots({ step, total = 3 }) {
 
 // ── Step 1: Welcome ─────────────────────────────────────────────────────────
 
-function StepWelcome({ welcomeTitle, welcomeSubtitle, welcomeEyebrow, onNext }) {
+function StepWelcome({ welcomeTitle, welcomeSubtitle, welcomeEyebrow, welcomeCtaLabel, onNext }) {
   const lines = welcomeTitle.split("|").map((l) => l.trim())
 
   return (
@@ -1093,7 +1093,7 @@ function StepWelcome({ welcomeTitle, welcomeSubtitle, welcomeEyebrow, onNext }) 
 
         <div className="pf-welcome-cta">
           <button className="pf-btn-primary" onClick={onNext}>
-            View packages
+            {welcomeCtaLabel}
           </button>
         </div>
 
@@ -1108,17 +1108,31 @@ function StepWelcome({ welcomeTitle, welcomeSubtitle, welcomeEyebrow, onNext }) 
 
 // ── Step 2: Package Selection ───────────────────────────────────────────────
 
-function StepPackages({ packages, selected, onSelect, onNext, onBack, footerNote }) {
-  const pkg = packages.find((p) => p.name === selected)
-
+function StepPackages({
+  packages,
+  selected,
+  onSelect,
+  onNext,
+  onBack,
+  footerNote,
+  packagesEyebrow,
+  packagesHeading,
+  billingLabel,
+  featuresLabel,
+  noSelectionLabel,
+  continueLabel,
+}) {
   return (
     <div className="pf-step">
       <div className="pf-packages-body">
         <div className="pf-packages-header">
-          <span className="pf-packages-eyebrow">Your stack, your choice</span>
-          <h2 className="pf-packages-heading">
-            Select the package that <strong>suits your needs.</strong>
-          </h2>
+          <span className="pf-packages-eyebrow">{packagesEyebrow}</span>
+          <h2
+            className="pf-packages-heading"
+            dangerouslySetInnerHTML={{
+              __html: packagesHeading.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"),
+            }}
+          />
         </div>
 
         <div className="pf-packages-grid">
@@ -1158,10 +1172,10 @@ function StepPackages({ packages, selected, onSelect, onNext, onBack, footerNote
 
                 <span className="pf-package-badge">{pkg.name}</span>
                 <span className="pf-package-price">{pkg.price}</span>
-                <span className="pf-package-billing">per month + GST</span>
+                <span className="pf-package-billing">{billingLabel}</span>
                 <span className="pf-package-name">{pkg.name}</span>
                 <p className="pf-package-desc">{pkg.desc}</p>
-                <span className="pf-package-features-label">What's included</span>
+                <span className="pf-package-features-label">{featuresLabel}</span>
                 <ul className="pf-package-features">
                   {features.map((f, i) => (
                     <li key={i} className="pf-package-feature">
@@ -1197,7 +1211,7 @@ function StepPackages({ packages, selected, onSelect, onNext, onBack, footerNote
               <span>Selected:</span> {selected}
             </>
           ) : (
-            <span>Select a package to continue</span>
+            <span>{noSelectionLabel}</span>
           )}
         </div>
 
@@ -1207,7 +1221,7 @@ function StepPackages({ packages, selected, onSelect, onNext, onBack, footerNote
           disabled={!selected}
           style={{ opacity: selected ? 1 : 0.4, cursor: selected ? "pointer" : "not-allowed" }}
         >
-          Continue
+          {continueLabel}
         </button>
       </footer>
     </div>
@@ -1226,6 +1240,19 @@ function StepAgreement({
   clientName,
   contactEmail,
   companyName,
+  billingLabel,
+  featuresLabel,
+  agreementEyebrow,
+  agreementHeading,
+  agreementDocTitle,
+  agreementPartiesClause,
+  summaryLabel,
+  signLabel,
+  signNamePlaceholder,
+  signCheckboxLabel,
+  acceptLabel,
+  acceptedHeading,
+  acceptedSubtitle,
 }) {
   const [name, setName] = useState("")
   const [checked, setChecked] = useState(false)
@@ -1237,7 +1264,24 @@ function StepAgreement({
     year: "numeric",
   })
 
+  const resolvedDocTitle = agreementDocTitle
+    .replace("{companyName}", companyName || clientName)
+    .replace("{clientName}", clientName)
+
+  const resolvedPartiesClause = agreementPartiesClause
+    .replace("{companyName}", companyName || clientName)
+    .replace("{clientName}", clientName)
+    .replace("{today}", today)
+    .replace("{selected}", selected)
+    .replace("{price}", pkg.price)
+    .replace("{billingLabel}", billingLabel)
+
+  const resolvedAcceptedSubtitle = acceptedSubtitle
+    .replace("{selected}", selected)
+    .replace("{contactEmail}", contactEmail)
+
   if (accepted) {
+    const acceptedLines = acceptedHeading.split("|").map((l) => l.trim())
     return (
       <div className="pf-step">
         <div className="pf-accepted">
@@ -1254,47 +1298,54 @@ function StepAgreement({
           </div>
 
           <h2 className="pf-accepted-heading">
-            Proposal <strong>accepted.</strong>
+            {acceptedLines.map((line, i) =>
+              i === acceptedLines.length - 1 ? (
+                <strong key={i}>{line}</strong>
+              ) : (
+                <span key={i}>
+                  {line}
+                  <br />
+                </span>
+              )
+            )}
           </h2>
 
-          <p className="pf-accepted-sub">
-            You're locked in on the <strong style={{ color: "var(--pf-primary)", fontWeight: 600 }}>{selected}</strong> package.
-            The Stackt team will be in touch within one business day to get your first 90-day block underway.
-          </p>
+          <p className="pf-accepted-sub">{resolvedAcceptedSubtitle}</p>
 
-          <span className="pf-accepted-meta">
-            {contactEmail}
-          </span>
+          <span className="pf-accepted-meta">{contactEmail}</span>
         </div>
       </div>
     )
   }
 
+  const agreementHeadingLines = agreementHeading.split("|").map((l) => l.trim())
+
   return (
     <div className="pf-step">
       <div className="pf-agreement-body">
         <div className="pf-agreement-left">
-          <span className="pf-agreement-eyebrow">Service agreement</span>
+          <span className="pf-agreement-eyebrow">{agreementEyebrow}</span>
           <h2 className="pf-agreement-heading">
-            Review and <strong>accept the terms.</strong>
+            {agreementHeadingLines.map((line, i) =>
+              i === agreementHeadingLines.length - 1 ? (
+                <strong key={i}>{line}</strong>
+              ) : (
+                <span key={i}>
+                  {line}
+                  <br />
+                </span>
+              )
+            )}
           </h2>
 
           <div className="pf-agreement-doc">
-            <p className="pf-agreement-doc-title">
-              Service Agreement — {companyName || clientName} × Stackt Digital
-            </p>
+            <p className="pf-agreement-doc-title">{resolvedDocTitle}</p>
 
             <div className="pf-agreement-clause">
               <span className="pf-agreement-clause-heading">Parties</span>
-              <p>
-                This agreement is between <strong style={{ color: "var(--pf-primary)" }}>{companyName || clientName}</strong> ("Client") and{" "}
-                <strong style={{ color: "var(--pf-primary)" }}>Stackt Digital Limited</strong> ("Stackt"), effective from{" "}
-                <strong style={{ color: "var(--pf-primary)" }}>{today}</strong>.
-              </p>
-              <p>
-                The Client has selected the <strong style={{ color: "var(--pf-sky)" }}>{selected}</strong> package at{" "}
-                <strong style={{ color: "var(--pf-sky)" }}>{pkg.price} per month + GST</strong>.
-              </p>
+              {resolvedPartiesClause.split("|").map((para, j) => (
+                <p key={j}>{para.trim()}</p>
+              ))}
             </div>
 
             {clauses.map((clause, i) => (
@@ -1310,12 +1361,12 @@ function StepAgreement({
 
         <div className="pf-agreement-right">
           <div className="pf-agreement-summary">
-            <span className="pf-agreement-summary-label">Selected package</span>
+            <span className="pf-agreement-summary-label">{summaryLabel}</span>
             <span className="pf-agreement-summary-tier">{pkg.name}</span>
             <span className="pf-agreement-summary-price">{pkg.price}</span>
-            <span className="pf-agreement-summary-billing">per month + GST</span>
+            <span className="pf-agreement-summary-billing">{billingLabel}</span>
             <div className="pf-agreement-summary-divider" />
-            <span className="pf-agreement-summary-includes">What's included</span>
+            <span className="pf-agreement-summary-includes">{featuresLabel}</span>
             <ul className="pf-agreement-summary-features">
               {features.slice(0, 6).map((f, i) => (
                 <li key={i} className="pf-agreement-summary-feature">
@@ -1331,12 +1382,12 @@ function StepAgreement({
           </div>
 
           <div className="pf-sign-block">
-            <span className="pf-sign-label">Sign to accept</span>
+            <span className="pf-sign-label">{signLabel}</span>
 
             <input
               className="pf-sign-name-input"
               type="text"
-              placeholder="Your full name"
+              placeholder={signNamePlaceholder}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -1355,10 +1406,11 @@ function StepAgreement({
                   </svg>
                 )}
               </div>
-              <span className="pf-sign-checkbox-label">
-                I have read and agree to the{" "}
-                <strong>terms and conditions</strong> of this service agreement.
-              </span>
+              <span className="pf-sign-checkbox-label"
+                dangerouslySetInnerHTML={{
+                  __html: signCheckboxLabel.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"),
+                }}
+              />
             </div>
 
             <button
@@ -1366,7 +1418,7 @@ function StepAgreement({
               disabled={!name.trim() || !checked}
               onClick={() => onAccept(name)}
             >
-              Accept proposal
+              {acceptLabel}
             </button>
           </div>
 
@@ -1393,16 +1445,39 @@ function StepAgreement({
 // ── Main component ──────────────────────────────────────────────────────────
 
 export default function ProposalFlow({
+  // ── Identity
+  navLogo = "Stackt",
   clientName = "Furnware",
   companyName = "",
   contactEmail = "lauren@stackt.digital",
+  // ── Step 1: Welcome
   welcomeEyebrow = "Confidential proposal",
   welcomeTitle = "Welcome to your|proposal.",
   welcomeSubtitle = "Please select the service package that suits your needs. Review the terms and accept to lock in your first 90-day block.",
-  packages = DEFAULT_PACKAGES,
+  welcomeCtaLabel = "View packages",
+  // ── Step 2: Packages
+  packagesEyebrow = "Your stack, your choice",
+  packagesHeading = "Select the package that **suits your needs.**",
+  billingLabel = "per month + GST",
+  featuresLabel = "What's included",
   footerNote = "All tiers include account management, quarterly 90-day review, and ClickUp project visibility. Pricing is ex-GST. Ad spend billed separately.",
-  clauses = DEFAULT_AGREEMENT_CLAUSES,
+  noSelectionLabel = "Select a package to continue",
+  continueLabel = "Continue",
+  packages = DEFAULT_PACKAGES,
   defaultSelectedPackage = "",
+  // ── Step 3: Agreement
+  agreementEyebrow = "Service agreement",
+  agreementHeading = "Review and|accept the terms.",
+  agreementDocTitle = "Service Agreement — {companyName} × Stackt Digital",
+  agreementPartiesClause = "This agreement is between {companyName} (\"Client\") and Stackt Digital Limited (\"Stackt\"), effective from {today}.|The Client has selected the {selected} package at {price} {billingLabel}.",
+  clauses = DEFAULT_AGREEMENT_CLAUSES,
+  summaryLabel = "Selected package",
+  signLabel = "Sign to accept",
+  signNamePlaceholder = "Your full name",
+  signCheckboxLabel = "I have read and agree to the **terms and conditions** of this service agreement.",
+  acceptLabel = "Accept proposal",
+  acceptedHeading = "Proposal|accepted.",
+  acceptedSubtitle = "You're locked in on the {selected} package. The team will be in touch within one business day to get your first 90-day block underway.",
 }) {
   const [step, setStep] = useState(0)
   const [selected, setSelected] = useState(defaultSelectedPackage || "")
@@ -1427,13 +1502,14 @@ export default function ProposalFlow({
   return (
     <div className="pf-root" ref={rootRef}>
       <ProgressDots step={accepted ? 3 : step} total={3} />
-      <Nav step={step} clientName={clientName} contactEmail={contactEmail} />
+      <Nav navLogo={navLogo} clientName={clientName} contactEmail={contactEmail} />
 
       {step === 0 && (
         <StepWelcome
           welcomeTitle={welcomeTitle}
           welcomeSubtitle={welcomeSubtitle}
           welcomeEyebrow={welcomeEyebrow}
+          welcomeCtaLabel={welcomeCtaLabel}
           onNext={() => setStep(1)}
         />
       )}
@@ -1446,6 +1522,12 @@ export default function ProposalFlow({
           onNext={() => setStep(2)}
           onBack={() => setStep(0)}
           footerNote={footerNote}
+          packagesEyebrow={packagesEyebrow}
+          packagesHeading={packagesHeading}
+          billingLabel={billingLabel}
+          featuresLabel={featuresLabel}
+          noSelectionLabel={noSelectionLabel}
+          continueLabel={continueLabel}
         />
       )}
 
@@ -1460,6 +1542,19 @@ export default function ProposalFlow({
           clientName={clientName}
           companyName={companyName}
           contactEmail={contactEmail}
+          billingLabel={billingLabel}
+          featuresLabel={featuresLabel}
+          agreementEyebrow={agreementEyebrow}
+          agreementHeading={agreementHeading}
+          agreementDocTitle={agreementDocTitle}
+          agreementPartiesClause={agreementPartiesClause}
+          summaryLabel={summaryLabel}
+          signLabel={signLabel}
+          signNamePlaceholder={signNamePlaceholder}
+          signCheckboxLabel={signCheckboxLabel}
+          acceptLabel={acceptLabel}
+          acceptedHeading={acceptedHeading}
+          acceptedSubtitle={acceptedSubtitle}
         />
       )}
     </div>
@@ -1467,6 +1562,12 @@ export default function ProposalFlow({
 }
 
 addPropertyControls(ProposalFlow, {
+  // ── Identity ──────────────────────────────────────────────────────────────
+  navLogo: {
+    type: ControlType.String,
+    title: "Nav Logo Text",
+    defaultValue: "Stackt",
+  },
   clientName: {
     type: ControlType.String,
     title: "Client Name",
@@ -1474,8 +1575,8 @@ addPropertyControls(ProposalFlow, {
   },
   companyName: {
     type: ControlType.String,
-    title: "Company Name",
-    description: "Full legal name for the agreement. Defaults to Client Name.",
+    title: "Company Legal Name",
+    description: "Used in the agreement doc. Defaults to Client Name if blank.",
     defaultValue: "",
   },
   contactEmail: {
@@ -1483,35 +1584,76 @@ addPropertyControls(ProposalFlow, {
     title: "Contact Email",
     defaultValue: "lauren@stackt.digital",
   },
+
+  // ── Step 1: Welcome ───────────────────────────────────────────────────────
   welcomeEyebrow: {
     type: ControlType.String,
-    title: "Welcome Eyebrow",
+    title: "Welcome — Eyebrow",
     defaultValue: "Confidential proposal",
   },
   welcomeTitle: {
     type: ControlType.String,
-    title: "Welcome Title",
-    description: "Use | to split into lines. Last line is rendered bold.",
+    title: "Welcome — Title",
+    description: "Use | to split into lines. Last line renders bold.",
     defaultValue: "Welcome to your|proposal.",
   },
   welcomeSubtitle: {
     type: ControlType.String,
-    title: "Welcome Subtitle",
+    title: "Welcome — Subtitle",
     defaultValue:
       "Please select the service package that suits your needs. Review the terms and accept to lock in your first 90-day block.",
   },
-  defaultSelectedPackage: {
-    type: ControlType.Enum,
-    title: "Pre-selected Package",
-    options: ["", "Ignite", "Amplify", "Surge"],
-    optionTitles: ["None", "Ignite", "Amplify", "Surge"],
-    defaultValue: "",
+  welcomeCtaLabel: {
+    type: ControlType.String,
+    title: "Welcome — CTA Button",
+    defaultValue: "View packages",
+  },
+
+  // ── Step 2: Packages ──────────────────────────────────────────────────────
+  packagesEyebrow: {
+    type: ControlType.String,
+    title: "Packages — Eyebrow",
+    defaultValue: "Your stack, your choice",
+  },
+  packagesHeading: {
+    type: ControlType.String,
+    title: "Packages — Heading",
+    description: "Wrap text in **double asterisks** to bold it.",
+    defaultValue: "Select the package that **suits your needs.**",
+  },
+  billingLabel: {
+    type: ControlType.String,
+    title: "Packages — Billing Label",
+    description: "Shown under every price on cards and in the agreement.",
+    defaultValue: "per month + GST",
+  },
+  featuresLabel: {
+    type: ControlType.String,
+    title: "Packages — Features Label",
+    description: "Shown above the feature list on cards and in the agreement.",
+    defaultValue: "What's included",
   },
   footerNote: {
     type: ControlType.String,
-    title: "Packages Footer Note",
+    title: "Packages — Footer Note",
     defaultValue:
       "All tiers include account management, quarterly 90-day review, and ClickUp project visibility. Pricing is ex-GST. Ad spend billed separately.",
+  },
+  noSelectionLabel: {
+    type: ControlType.String,
+    title: "Packages — No Selection Label",
+    defaultValue: "Select a package to continue",
+  },
+  continueLabel: {
+    type: ControlType.String,
+    title: "Packages — Continue Button",
+    defaultValue: "Continue",
+  },
+  defaultSelectedPackage: {
+    type: ControlType.String,
+    title: "Packages — Pre-selected",
+    description: "Enter a package name to pre-select it, or leave blank.",
+    defaultValue: "",
   },
   packages: {
     type: ControlType.Array,
@@ -1525,7 +1667,7 @@ addPropertyControls(ProposalFlow, {
         features: {
           type: ControlType.String,
           title: "Features",
-          description: "Comma separated",
+          description: "Comma separated list of features",
           defaultValue: "Feature one,Feature two",
         },
         style: {
@@ -1537,5 +1679,95 @@ addPropertyControls(ProposalFlow, {
       },
     },
     defaultValue: DEFAULT_PACKAGES,
+  },
+
+  // ── Step 3: Agreement ─────────────────────────────────────────────────────
+  agreementEyebrow: {
+    type: ControlType.String,
+    title: "Agreement — Eyebrow",
+    defaultValue: "Service agreement",
+  },
+  agreementHeading: {
+    type: ControlType.String,
+    title: "Agreement — Heading",
+    description: "Use | to split into lines. Last line renders bold.",
+    defaultValue: "Review and|accept the terms.",
+  },
+  agreementDocTitle: {
+    type: ControlType.String,
+    title: "Agreement — Doc Title",
+    description: "Use {companyName} or {clientName} as placeholders.",
+    defaultValue: "Service Agreement — {companyName} × Stackt Digital",
+  },
+  agreementPartiesClause: {
+    type: ControlType.String,
+    title: "Agreement — Parties Clause",
+    description:
+      "Use | for paragraph breaks. Placeholders: {companyName}, {clientName}, {today}, {selected}, {price}, {billingLabel}.",
+    defaultValue:
+      "This agreement is between {companyName} (\"Client\") and Stackt Digital Limited (\"Stackt\"), effective from {today}.|The Client has selected the {selected} package at {price} {billingLabel}.",
+  },
+  clauses: {
+    type: ControlType.Array,
+    title: "Agreement — Clauses",
+    control: {
+      type: ControlType.Object,
+      controls: {
+        heading: {
+          type: ControlType.String,
+          title: "Heading",
+          defaultValue: "1. Clause title",
+        },
+        text: {
+          type: ControlType.String,
+          title: "Text",
+          description: "Use | to split into separate paragraphs.",
+          defaultValue: "Clause body text goes here.",
+        },
+      },
+    },
+    defaultValue: DEFAULT_AGREEMENT_CLAUSES,
+  },
+  summaryLabel: {
+    type: ControlType.String,
+    title: "Agreement — Summary Label",
+    defaultValue: "Selected package",
+  },
+  signLabel: {
+    type: ControlType.String,
+    title: "Agreement — Sign Label",
+    defaultValue: "Sign to accept",
+  },
+  signNamePlaceholder: {
+    type: ControlType.String,
+    title: "Agreement — Name Placeholder",
+    defaultValue: "Your full name",
+  },
+  signCheckboxLabel: {
+    type: ControlType.String,
+    title: "Agreement — Checkbox Label",
+    description: "Wrap text in **double asterisks** to bold it.",
+    defaultValue:
+      "I have read and agree to the **terms and conditions** of this service agreement.",
+  },
+  acceptLabel: {
+    type: ControlType.String,
+    title: "Agreement — Accept Button",
+    defaultValue: "Accept proposal",
+  },
+
+  // ── Accepted screen ───────────────────────────────────────────────────────
+  acceptedHeading: {
+    type: ControlType.String,
+    title: "Accepted — Heading",
+    description: "Use | to split into lines. Last line renders bold.",
+    defaultValue: "Proposal|accepted.",
+  },
+  acceptedSubtitle: {
+    type: ControlType.String,
+    title: "Accepted — Subtitle",
+    description: "Placeholders: {selected}, {contactEmail}.",
+    defaultValue:
+      "You're locked in on the {selected} package. The team will be in touch within one business day to get your first 90-day block underway.",
   },
 })
