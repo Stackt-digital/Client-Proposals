@@ -13,6 +13,7 @@ import {
   TrendingUp,
   CheckSquare,
   ListTodo,
+  Video,
 } from "lucide-react";
 import { Client, ActionItem } from "@/lib/types";
 
@@ -36,6 +37,7 @@ const navItems: NavItem[] = [
   { label: "Reporting", href: "/reporting", icon: BarChart3, enabled: (c) => !!c.gomarble_url },
   { label: "Files", href: "/files", icon: FolderOpen, enabled: (c) => !!c.google_drive_folder_id },
   { label: "Invoices", href: "/invoices", icon: Receipt, enabled: (c) => !!c.xero_invoice_url, badgeKey: "invoice" },
+  { label: "Meetings", href: "/meetings", icon: Video, enabled: (c) => !!c.fireflies_enabled },
 ];
 
 export default function PortalSidebar({

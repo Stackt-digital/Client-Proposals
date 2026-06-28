@@ -26,6 +26,8 @@ export interface Client {
   hero_image_url?: string;
   about_text?: string;
   client_email?: string;
+  account_lead_email?: string;
+  fireflies_enabled?: boolean;
 
   // Integration configs
   clickup_list_id?: string;

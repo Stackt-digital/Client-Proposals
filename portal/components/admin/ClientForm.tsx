@@ -27,10 +27,12 @@ export default function ClientForm({ client }: Props) {
   const [form, setForm] = useState({
     name: client?.name ?? "",
     client_email: client?.client_email ?? "",
+    account_lead_email: client?.account_lead_email ?? "",
     about_text: client?.about_text ?? "",
     logo_url: client?.logo_url ?? "",
     hero_image_url: client?.hero_image_url ?? "",
     is_active: client?.is_active ?? true,
+    fireflies_enabled: client?.fireflies_enabled ?? false,
     clickup_list_id: client?.clickup_list_id ?? "",
     google_drive_folder_id: client?.google_drive_folder_id ?? "",
     gomarble_url: client?.gomarble_url ?? "",
@@ -101,6 +103,18 @@ export default function ClientForm({ client }: Props) {
         </div>
 
         <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">Account Lead Email</label>
+          <input
+            type="email"
+            value={form.account_lead_email}
+            onChange={(e) => field("account_lead_email", e.target.value)}
+            placeholder="lead@stackt.co.nz"
+            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+          />
+          <p className="text-xs text-gray-400 mt-1">This team member is emailed when the client completes an action item</p>
+        </div>
+
+        <div>
           <label className="block text-xs font-medium text-gray-600 mb-1.5">About / Welcome text</label>
           <textarea
             value={form.about_text}
@@ -136,6 +150,17 @@ export default function ClientForm({ client }: Props) {
             className="w-4 h-4 rounded border-gray-300"
           />
           <label htmlFor="is_active" className="text-sm text-gray-700">Portal is active (visible to client)</label>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="fireflies_enabled"
+            checked={form.fireflies_enabled as boolean}
+            onChange={(e) => field("fireflies_enabled", e.target.checked)}
+            className="w-4 h-4 rounded border-gray-300"
+          />
+          <label htmlFor="fireflies_enabled" className="text-sm text-gray-700">Show meeting notes (Fireflies)</label>
         </div>
       </div>
 

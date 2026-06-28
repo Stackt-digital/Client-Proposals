@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ActionItem, ActionType } from "@/lib/types";
 import { actionLabel } from "@/lib/utils";
-import { Plus, Trash2, CheckCircle2, Circle } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, Circle, Send } from "lucide-react";
 
 const ACTION_TYPES: ActionType[] = [
   "content_approval",
@@ -14,10 +14,12 @@ const ACTION_TYPES: ActionType[] = [
   "reporting",
 ];
 
-export default function ActionItemManager({ clientId, actions }: { clientId: string; actions: ActionItem[] }) {
+export default function ActionItemManager({ clientId, actions, hasClientEmail }: { clientId: string; actions: ActionItem[]; hasClientEmail?: boolean }) {
   const router = useRouter();
   const [adding, setAdding] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [notifying, setNotifying] = useState(false);
+  const [notifyResult, setNotifyResult] = useState<string | null>(null);
   const [form, setForm] = useState({
     type: "content_approval" as ActionType,
     title: "",
@@ -57,8 +59,50 @@ export default function ActionItemManager({ clientId, actions }: { clientId: str
     router.refresh();
   }
 
+  async function notifyClient() {
+    setNotifying(true);
+    setNotifyResult(null);
+    try {
+      const res = await fetch("/api/admin/clients/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to send");
+      setNotifyResult(`Email sent — ${data.sent} action${data.sent === 1 ? "" : "s"} listed`);
+    } catch (err) {
+      setNotifyResult(err instanceof Error ? err.message : "Failed to send");
+    } finally {
+      setNotifying(false);
+    }
+  }
+
+  const pendingCount = actions.filter((a) => a.status === "pending").length;
+
   return (
     <div className="space-y-3">
+      {/* Notify client button */}
+      {hasClientEmail && (
+        <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+          <div>
+            <p className="text-sm font-medium text-gray-800">Notify client</p>
+            <p className="text-xs text-gray-500">Send an email listing all {pendingCount} pending action{pendingCount === 1 ? "" : "s"}</p>
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <button
+              onClick={notifyClient}
+              disabled={notifying || pendingCount === 0}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-colors disabled:opacity-40"
+              style={{ backgroundColor: "#0D2933" }}
+            >
+              {notifying ? "Sending…" : <><Send size={12} />Send now</>}
+            </button>
+            {notifyResult && <p className="text-[11px] text-gray-500">{notifyResult}</p>}
+          </div>
+        </div>
+      )}
+
       {/* Existing items */}
       {actions.map((item) => (
         <div key={item.id} className="bg-white rounded-xl border border-gray-200 px-4 py-3 flex items-center gap-3">

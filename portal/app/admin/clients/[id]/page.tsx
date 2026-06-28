@@ -5,6 +5,7 @@ import ClientForm from "@/components/admin/ClientForm";
 import ActionItemManager from "@/components/admin/ActionItemManager";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { headers } from "next/headers";
 
 export default async function EditClientPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,8 +19,10 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
     .eq("client_id", id)
     .order("created_at", { ascending: false });
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const portalUrl = `${baseUrl}/portal/${client.token}`;
+  const headersList = await headers();
+  const host = headersList.get("host") ?? "localhost:3000";
+  const proto = host.startsWith("localhost") ? "http" : "https";
+  const portalUrl = `${proto}://${host}/portal/${client.token}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -58,7 +61,7 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
         {/* Action items */}
         <div>
           <h2 className="text-base font-semibold text-brand-black mb-4">Action Items</h2>
-          <ActionItemManager clientId={id} actions={(actions ?? []) as import("@/lib/types").ActionItem[]} />
+          <ActionItemManager clientId={id} actions={(actions ?? []) as import("@/lib/types").ActionItem[]} hasClientEmail={!!(client as Client).client_email} />
         </div>
       </div>
     </div>
