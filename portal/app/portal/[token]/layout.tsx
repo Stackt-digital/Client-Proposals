@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import PortalSidebar from "@/components/portal/PortalSidebar";
 import ChatWidget from "@/components/portal/ChatWidget";
 import { Client, ActionItem } from "@/lib/types";
+import VisitLogger from "@/components/portal/VisitLogger";
 import type { Metadata } from "next";
 
 async function getClientData(token: string) {
@@ -67,6 +68,7 @@ export default async function PortalLayout({
         {children}
       </div>
       <ChatWidget token={token} />
+      <VisitLogger clientId={client.id} />
     </div>
   );
 }

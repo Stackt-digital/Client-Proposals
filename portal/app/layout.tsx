@@ -19,6 +19,9 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "stackt | Client Portal",
   description: "Your agency portal — strategy, reporting, files, and actions in one place.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

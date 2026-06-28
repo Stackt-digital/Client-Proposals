@@ -86,14 +86,14 @@ export default async function PortalHomePage({
   return (
     <main className="flex-1 overflow-auto bg-gray-50">
       {/* Top breadcrumb */}
-      <div className="px-8 py-3.5 bg-white border-b border-gray-100">
+      <div className="px-4 sm:px-8 py-3.5 bg-white border-b border-gray-100">
         <span className="text-sm text-gray-400 font-medium">Home</span>
       </div>
 
       {/* First-visit welcome banner */}
       <WelcomeBanner token={token} clientName={client.name} />
 
-      <div className="px-8 py-8 max-w-4xl space-y-5">
+      <div className="px-4 sm:px-8 py-8 max-w-4xl space-y-5">
         {/* Greeting */}
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">

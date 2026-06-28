@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { ExternalLink, FolderOpen, FileText, File, Image } from "lucide-react";
+import { ExternalLink, FolderOpen, FileText, File, Image, AlertCircle } from "lucide-react";
 
 interface DriveFile {
   id: string;
@@ -11,20 +11,20 @@ interface DriveFile {
   size?: string;
 }
 
-async function getDriveFiles(folderId: string): Promise<DriveFile[]> {
+async function getDriveFiles(folderId: string): Promise<{ files: DriveFile[]; error: boolean }> {
   const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
-  if (!apiKey) return [];
+  if (!apiKey) return { files: [], error: false };
 
   try {
     const res = await fetch(
       `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&fields=files(id,name,mimeType,modifiedTime,webViewLink,size)&orderBy=modifiedTime+desc&key=${apiKey}`,
       { next: { revalidate: 60 } }
     );
-    if (!res.ok) return [];
+    if (!res.ok) return { files: [], error: true };
     const data = await res.json();
-    return data.files ?? [];
+    return { files: data.files ?? [], error: false };
   } catch {
-    return [];
+    return { files: [], error: true };
   }
 }
 
@@ -50,7 +50,7 @@ export default async function FilesPage({ params }: { params: Promise<{ token: s
 
   if (!client || !client.google_drive_folder_id) notFound();
 
-  const files = await getDriveFiles(client.google_drive_folder_id);
+  const { files, error } = await getDriveFiles(client.google_drive_folder_id);
   const folderUrl = `https://drive.google.com/drive/folders/${client.google_drive_folder_id}`;
 
   return (
@@ -71,8 +71,17 @@ export default async function FilesPage({ params }: { params: Promise<{ token: s
         </a>
       </div>
 
-      <div className="flex-1 p-8">
-        {files.length === 0 ? (
+      <div className="flex-1 p-4 sm:p-8">
+        {error && (
+          <div className="bg-red-50 border border-red-100 rounded-xl px-5 py-4 flex items-start gap-3 mb-4">
+            <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-red-700">Couldn&apos;t load files</p>
+              <p className="text-xs text-red-500 mt-0.5">There was a problem connecting to Google Drive. Please try refreshing the page.</p>
+            </div>
+          </div>
+        )}
+        {!error && files.length === 0 ? (
           <div className="text-center py-16">
             <FolderOpen size={40} className="text-gray-300 mx-auto mb-3" />
             <p className="text-sm text-gray-400">No files yet — check back soon.</p>
