@@ -21,7 +21,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const client = action.clients as { name: string; token: string; account_lead_email?: string } | null;
+  const clientRaw = action.clients;
+  const client = (Array.isArray(clientRaw) ? clientRaw[0] : clientRaw) as { name: string; token: string; account_lead_email?: string } | null;
   if (client?.account_lead_email) {
     const headersList = await headers();
     const host = headersList.get("host") ?? "";
