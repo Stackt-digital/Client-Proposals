@@ -74,35 +74,38 @@ export default async function PortalHomePage({
 
   return (
     <main className="flex-1 overflow-auto bg-gray-50">
-      {/* Top bar */}
-      <div className="px-8 py-3.5 bg-white border-b border-gray-100 flex items-center justify-between">
+      {/* Top breadcrumb */}
+      <div className="px-8 py-3.5 bg-white border-b border-gray-100">
         <span className="text-sm text-gray-400 font-medium">Home</span>
       </div>
 
-      <div className="px-8 py-8 max-w-4xl">
+      <div className="px-8 py-8 max-w-4xl space-y-5">
         {/* Greeting */}
-        <h1 className="text-2xl font-semibold text-gray-900 mb-0.5">
-          {getGreeting()}, {client.name}
-        </h1>
-        <p className="text-sm text-gray-400 mb-6">Here&apos;s what needs your attention today</p>
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">
+            {getGreeting()}, {client.name}
+          </h1>
+          <p className="text-sm text-gray-400 mt-0.5">Here&apos;s what needs your attention today</p>
+        </div>
 
-        {/* Hero banner */}
-        <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-6" style={{ backgroundColor: "#0D2933" }}>
-          {client.hero_image_url ? (
+        {/* Hero banner — rounded corners, clear spacing from greeting */}
+        <div
+          className="relative w-full h-44 rounded-2xl overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #0D2933 0%, #0D3A4A 55%, #1a5a6e 100%)" }}
+        >
+          {client.hero_image_url && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={client.hero_image_url}
               alt=""
               className="absolute inset-0 w-full h-full object-cover opacity-40"
             />
-          ) : (
-            <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0D2933 0%, #0D3A4A 50%, #3FA6C8 100%)", opacity: 0.9 }} />
           )}
         </div>
 
         {/* Actions card */}
         {actionCards.length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-4 shadow-sm">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
             <h2 className="text-base font-semibold text-gray-900 mb-0.5">Your actions</h2>
             <p className="text-sm text-gray-400 mb-5">
               You have <span className="text-gray-700 font-medium">{pending.length}</span> pending {pending.length === 1 ? "item" : "items"}
@@ -137,7 +140,7 @@ export default async function PortalHomePage({
 
         {/* Quick links */}
         {quickLinks.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-3 gap-3">
             {quickLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -147,7 +150,7 @@ export default async function PortalHomePage({
                   className="group bg-white rounded-xl border border-gray-100 p-4 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "#EAFCFF" }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "#F0FAFF" }}>
                       <Icon size={15} className="text-brand-dark" strokeWidth={1.8} />
                     </div>
                     <span className="text-sm font-medium text-gray-700">{link.label}</span>

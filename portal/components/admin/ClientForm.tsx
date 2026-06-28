@@ -9,6 +9,7 @@ interface Props {
 }
 
 const integrations = [
+  { key: "clickup_list_id", label: "ClickUp List/View ID", placeholder: "abc123xyz", hint: "Found in the ClickUp share link: /embed/THIS_PART/l/list" },
   { key: "google_drive_folder_id", label: "Google Drive Folder ID", placeholder: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs", hint: "Found in the Drive folder URL: /folders/THIS_PART" },
   { key: "gomarble_url", label: "GoMarble Report URL", placeholder: "https://app.gomarble.com/reports/...", hint: "Full URL to the client's GoMarble dashboard" },
   { key: "figma_url", label: "Figma File URL", placeholder: "https://www.figma.com/file/...", hint: "Link to the Figma file for creative review" },

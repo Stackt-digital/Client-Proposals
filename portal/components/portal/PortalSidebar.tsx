@@ -12,6 +12,7 @@ import {
   Receipt,
   TrendingUp,
   CheckSquare,
+  ListTodo,
 } from "lucide-react";
 import { Client, ActionItem } from "@/lib/types";
 
@@ -27,6 +28,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Home", href: "", icon: Home },
+  { label: "Tasks", href: "/tasks", icon: ListTodo, enabled: (c) => !!c.clickup_list_id },
   { label: "Content", href: "", icon: CheckSquare, enabled: (c) => !!c.statusbrew_url, badgeKey: "content_approval", external: true, externalHref: (c) => c.statusbrew_url! },
   { label: "Performance", href: "/performance", icon: TrendingUp, enabled: (c) => !!c.performance_planner_url, badgeKey: "performance_planner" },
   { label: "Creative", href: "/creative", icon: Palette, enabled: (c) => !!c.figma_url, badgeKey: "creative_review" },
@@ -48,7 +50,10 @@ export default function PortalSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="w-52 shrink-0 flex flex-col min-h-screen border-r border-gray-200" style={{ backgroundColor: "#EAFCFF" }}>
+    <aside
+      className="w-52 shrink-0 flex flex-col min-h-screen border-r border-gray-100"
+      style={{ backgroundColor: "#F0FAFF" }}
+    >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
         {client.logo_url ? (
@@ -59,9 +64,10 @@ export default function PortalSidebar({
             <div className="w-7 h-7 rounded-md bg-brand-dark flex items-center justify-center shrink-0">
               <span className="text-white text-[11px] font-bold tracking-tight">S</span>
             </div>
-            <span className="text-sm font-semibold text-brand-dark tracking-wide">stackt</span>
+            <span className="text-sm font-semibold text-black tracking-wide uppercase">stackt</span>
           </div>
         )}
+        <p className="text-[11px] text-gray-400 mt-1 pl-9">{client.name}</p>
       </div>
 
       {/* Nav */}
@@ -89,14 +95,14 @@ export default function PortalSidebar({
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
-                  ? "bg-white text-brand-dark font-semibold shadow-sm"
-                  : "text-gray-600 hover:bg-white/60 hover:text-brand-dark font-medium"
+                  ? "bg-white text-black font-semibold shadow-sm"
+                  : "text-black/70 hover:bg-white/70 hover:text-black font-medium"
               )}
             >
-              <Icon size={15} strokeWidth={1.8} className="shrink-0" />
+              <Icon size={15} strokeWidth={1.8} className="shrink-0 text-black/50" />
               <span className="flex-1">{item.label}</span>
               {badgeCount > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-brand-dark text-white text-[10px] font-bold px-1">
+                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-black text-white text-[10px] font-bold px-1">
                   {badgeCount}
                 </span>
               )}
