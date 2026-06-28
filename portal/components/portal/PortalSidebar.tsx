@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
   { label: "Reporting",   href: "/reporting",   icon: BarChart3,   iconAnim: "icon-grow",        enabled: (c) => !!(c.gomarble_url) },
   { label: "Files",       href: "/files",       icon: FolderOpen,  iconAnim: "icon-pop",         enabled: (c) => !!c.google_drive_folder_id },
   { label: "Invoices",    href: "/invoices",    icon: Receipt,     iconAnim: "icon-print",       enabled: (c) => !!c.xero_invoice_url, badgeKey: "invoice" },
-  { label: "Meetings",    href: "/meetings",    icon: Video,       iconAnim: "icon-pulse",       enabled: (c) => !!c.fireflies_enabled },
+  { label: "Meetings",    href: "/meetings",    icon: Video,       iconAnim: "icon-pulse",       enabled: (c) => !!c.clickup_meetings_list_id },
 ];
 
 function SidebarContent({

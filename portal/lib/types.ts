@@ -32,6 +32,7 @@ export interface Client {
 
   // Integration configs
   clickup_list_id?: string;
+  clickup_meetings_list_id?: string;
   statusbrew_url?: string;
   figma_url?: string;
   gomarble_url?: string;

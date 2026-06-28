@@ -10,7 +10,8 @@ interface Props {
 }
 
 const integrations = [
-  { key: "clickup_list_id", label: "ClickUp List/View ID", placeholder: "abc123xyz", hint: "Found in the ClickUp share link: /embed/THIS_PART/l/list" },
+  { key: "clickup_list_id", label: "ClickUp Tasks List ID", placeholder: "abc123xyz", hint: "Found in the ClickUp share link: /embed/THIS_PART/l/list — shows the Tasks tab" },
+  { key: "clickup_meetings_list_id", label: "ClickUp Meetings List ID", placeholder: "abc123xyz", hint: "A separate ClickUp list where you add Fireflies links when a meeting is ready for the client" },
   { key: "google_drive_folder_id", label: "Google Drive Folder ID", placeholder: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs", hint: "Found in the Drive folder URL: /folders/THIS_PART" },
   { key: "gomarble_url", label: "GoMarble Report URL", placeholder: "https://app.gomarble.com/reports/...", hint: "Full URL to the client's GoMarble dashboard" },
   { key: "figma_url", label: "Figma File URL", placeholder: "https://www.figma.com/file/...", hint: "Link to the Figma file for creative review" },
@@ -35,6 +36,7 @@ export default function ClientForm({ client }: Props) {
     is_active: client?.is_active ?? true,
     fireflies_enabled: client?.fireflies_enabled ?? false,
     clickup_list_id: client?.clickup_list_id ?? "",
+    clickup_meetings_list_id: client?.clickup_meetings_list_id ?? "",
     google_drive_folder_id: client?.google_drive_folder_id ?? "",
     gomarble_url: client?.gomarble_url ?? "",
     figma_url: client?.figma_url ?? "",
