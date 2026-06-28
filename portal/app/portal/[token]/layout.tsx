@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import PortalSidebar from "@/components/portal/PortalSidebar";
+import ChatWidget from "@/components/portal/ChatWidget";
 import { Client, ActionItem } from "@/lib/types";
 
 async function getClientData(token: string) {
@@ -48,6 +49,7 @@ export default async function PortalLayout({
       <div className="flex-1 flex flex-col min-w-0">
         {children}
       </div>
+      <ChatWidget token={token} />
     </div>
   );
 }

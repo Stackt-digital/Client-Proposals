@@ -73,21 +73,13 @@ body {
   100% { transform: scale(1); }
 }
 
-.icon-anim {
-  animation-duration: 0.45s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: 1;
-  animation-fill-mode: both;
-  animation-play-state: paused;
-}
-.group:hover .icon-anim { animation-play-state: running; }
-
-.icon-bounce     { animation-name: icon-bounce; }
-.icon-spin       { animation-name: icon-spin; animation-duration: 0.4s; animation-timing-function: ease-in-out; }
-.icon-wiggle     { animation-name: icon-wiggle; animation-duration: 0.5s; }
-.icon-slide-up   { animation-name: icon-slide-up; }
-.icon-slide-right{ animation-name: icon-slide-right; }
-.icon-pulse      { animation-name: icon-pulse; animation-duration: 0.5s; }
-.icon-grow       { animation-name: icon-grow; }
-.icon-print      { animation-name: icon-print; }
-.icon-pop        { animation-name: icon-pop; animation-duration: 0.35s; }
+/* Animation only applied on hover so it resets on every mouse-enter */
+.group:hover .icon-bounce      { animation: icon-bounce 0.45s ease-in-out; }
+.group:hover .icon-spin        { animation: icon-spin 0.4s ease-in-out; }
+.group:hover .icon-wiggle      { animation: icon-wiggle 0.5s ease-in-out; }
+.group:hover .icon-slide-up    { animation: icon-slide-up 0.45s ease-in-out; }
+.group:hover .icon-slide-right { animation: icon-slide-right 0.45s ease-in-out; }
+.group:hover .icon-pulse       { animation: icon-pulse 0.5s ease-in-out; }
+.group:hover .icon-grow        { animation: icon-grow 0.45s ease-in-out; }
+.group:hover .icon-print       { animation: icon-print 0.45s ease-in-out; }
+.group:hover .icon-pop         { animation: icon-pop 0.35s ease-in-out; }
