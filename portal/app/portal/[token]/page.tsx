@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Client, ActionItem } from "@/lib/types";
 import Link from "next/link";
 import { ArrowRight, FileText, BarChart3, Palette, FolderOpen, Receipt, TrendingUp, CheckSquare } from "lucide-react";
+import CompleteButton from "@/components/portal/CompleteButton";
 
 async function getPortalData(token: string) {
   const { data: client } = await supabase
@@ -135,6 +136,21 @@ export default async function PortalHomePage({
                 );
               })}
             </div>
+
+            {/* Individual pending items with mark-done buttons */}
+            {pending.length > 0 && (
+              <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
+                {pending.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between gap-3 py-1">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-800 truncate">{item.title}</p>
+                      {item.description && <p className="text-xs text-gray-400 truncate">{item.description}</p>}
+                    </div>
+                    <CompleteButton actionId={item.id} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

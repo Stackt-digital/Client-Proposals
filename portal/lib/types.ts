@@ -25,6 +25,7 @@ export interface Client {
   logo_url?: string;
   hero_image_url?: string;
   about_text?: string;
+  client_email?: string;
 
   // Integration configs
   clickup_list_id?: string;

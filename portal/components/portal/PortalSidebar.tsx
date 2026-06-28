@@ -56,18 +56,20 @@ export default function PortalSidebar({
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
-        {client.logo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={client.logo_url} alt="Stackt" className="h-7 w-auto object-contain" />
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-brand-dark flex items-center justify-center shrink-0">
-              <span className="text-white text-[11px] font-bold tracking-tight">S</span>
-            </div>
-            <span className="text-sm font-semibold text-black tracking-wide uppercase">stackt</span>
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 border border-gray-100">
+            {client.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={client.logo_url} alt="Stackt" className="w-6 h-6 object-contain" />
+            ) : (
+              <span className="text-[11px] font-bold text-gray-900">S</span>
+            )}
           </div>
-        )}
-        <p className="text-[11px] text-gray-400 mt-1 pl-9">{client.name}</p>
+          <div>
+            <span className="text-sm font-semibold text-black tracking-wide uppercase">stackt</span>
+            <p className="text-[11px] text-gray-400 leading-tight">{client.name}</p>
+          </div>
+        </div>
       </div>
 
       {/* Nav */}
