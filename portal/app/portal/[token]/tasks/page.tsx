@@ -11,10 +11,12 @@ export default async function TasksPage({ params }: { params: Promise<{ token: s
 
   if (!client || !client.clickup_list_id) notFound();
 
-  // Accept either a full sharing URL or just the ID
+  // Build embed URL from the public sharing link
+  // Public link: https://sharing.clickup.com/TEAM/l/h/LIST_ID/TOKEN
+  // Embed link:  https://sharing.clickup.com/TEAM/l/h/LIST_ID/TOKEN (same URL, just rendered in iframe)
   const raw = client.clickup_list_id;
   const embedUrl = raw.startsWith("http")
-    ? raw.replace("sharing.clickup.com/", "sharing.clickup.com/embed/")
+    ? raw
     : `https://sharing.clickup.com/embed/${raw}/l/list`;
 
   return (
