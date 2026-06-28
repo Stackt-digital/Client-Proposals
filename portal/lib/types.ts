@@ -27,6 +27,7 @@ export interface Client {
   about_text?: string;
   client_email?: string;
   account_lead_email?: string;
+  calendar_url?: string;
   fireflies_enabled?: boolean;
 
   // Integration configs

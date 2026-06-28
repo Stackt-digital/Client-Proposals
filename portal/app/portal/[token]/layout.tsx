@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import PortalSidebar from "@/components/portal/PortalSidebar";
 import ChatWidget from "@/components/portal/ChatWidget";
 import { Client, ActionItem } from "@/lib/types";
+import type { Metadata } from "next";
 
 async function getClientData(token: string) {
   const { data: client, error } = await supabase
@@ -28,6 +29,21 @@ async function getClientData(token: string) {
   return { client: client as Client, pendingCounts };
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
+  const { token } = await params;
+  const { data: client } = await supabase
+    .from("clients")
+    .select("name")
+    .eq("token", token)
+    .eq("is_active", true)
+    .single();
+
+  return {
+    title: client ? `${client.name} | Stackt Portal` : "Stackt Portal",
+    description: "Your Stackt agency portal — strategy, reporting, files, and actions in one place.",
+  };
+}
+
 export default async function PortalLayout({
   children,
   params,
@@ -46,11 +62,13 @@ export default async function PortalLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <PortalSidebar client={client} basePath={basePath} pendingCounts={pendingCounts} />
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* pt-14 offsets the mobile fixed top bar; md:pt-0 removes it on desktop */}
+      <div className="flex-1 flex flex-col min-w-0 pt-14 md:pt-0">
         {children}
       </div>
       <ChatWidget token={token} />
     </div>
   );
 }
+
 export const dynamic = "force-dynamic";

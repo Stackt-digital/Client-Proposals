@@ -28,6 +28,7 @@ export default function ClientForm({ client }: Props) {
     name: client?.name ?? "",
     client_email: client?.client_email ?? "",
     account_lead_email: client?.account_lead_email ?? "",
+    calendar_url: client?.calendar_url ?? "",
     about_text: client?.about_text ?? "",
     logo_url: client?.logo_url ?? "",
     hero_image_url: client?.hero_image_url ?? "",
@@ -112,6 +113,18 @@ export default function ClientForm({ client }: Props) {
             className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-colors"
           />
           <p className="text-xs text-gray-400 mt-1">This team member is emailed when the client completes an action item</p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">Account Lead Calendar Link</label>
+          <input
+            type="url"
+            value={form.calendar_url}
+            onChange={(e) => field("calendar_url", e.target.value)}
+            placeholder="https://cal.com/yourname or https://calendly.com/yourname"
+            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-colors font-mono"
+          />
+          <p className="text-xs text-gray-400 mt-1">Shows a &apos;Book a call&apos; button in the client portal. Use Calendly, Cal.com, or any booking link.</p>
         </div>
 
         <div>

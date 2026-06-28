@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Space_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const hanken = Hanken_Grotesk({
@@ -27,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${hanken.variable} ${spaceMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
