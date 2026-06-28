@@ -75,7 +75,7 @@ export default async function PortalHomePage({
   return (
     <main className="flex-1 overflow-auto bg-gray-50">
       {/* Top bar */}
-      <div className="px-8 py-3.5 bg-white border-b border-gray-100">
+      <div className="px-8 py-3.5 bg-white border-b border-gray-100 flex items-center justify-between">
         <span className="text-sm text-gray-400 font-medium">Home</span>
       </div>
 
@@ -87,16 +87,17 @@ export default async function PortalHomePage({
         <p className="text-sm text-gray-400 mb-6">Here&apos;s what needs your attention today</p>
 
         {/* Hero banner */}
-        <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-6 bg-gray-900">
+        <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-6" style={{ backgroundColor: "#0D2933" }}>
           {client.hero_image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={client.hero_image_url}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-50"
+              className="absolute inset-0 w-full h-full object-cover opacity-40"
             />
-          ) : null}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-brand-teal/20" />
+          ) : (
+            <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0D2933 0%, #0D3A4A 50%, #3FA6C8 100%)", opacity: 0.9 }} />
+          )}
         </div>
 
         {/* Actions card */}
