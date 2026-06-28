@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#0D2933"/>
-  <text x="16" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">S</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Three stacked layer outlines, matching the Stackt logo -->
+  <!-- Top layer -->
+  <polygon points="50,6 94,26 50,46 6,26" fill="none" stroke="#2b2b2b" stroke-width="6.5" stroke-linejoin="round"/>
+  <!-- Middle layer (sides connect top to middle) -->
+  <polyline points="6,26 6,42 50,62 94,42 94,26" fill="none" stroke="#2b2b2b" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Bottom layer (sides connect middle to bottom) -->
+  <polyline points="6,42 6,58 50,78 94,58 94,42" fill="none" stroke="#2b2b2b" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
 </svg>
