@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { Client } from "@/lib/types";
 import { Plus, ExternalLink, Users, Settings } from "lucide-react";
+import CopyLinkButton from "@/components/admin/CopyLinkButton";
 
 async function getClients(): Promise<Client[]> {
   const { data } = await supabase.from("clients").select("*").order("created_at", { ascending: false });
@@ -86,6 +87,7 @@ export default async function AdminPage() {
                       <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${client.is_active ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-400"}`}>
                         {client.is_active ? "Active" : "Inactive"}
                       </span>
+                      <CopyLinkButton token={client.token} />
                       <Link
                         href={portalPath}
                         target="_blank"
