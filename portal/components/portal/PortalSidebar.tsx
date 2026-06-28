@@ -21,6 +21,7 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ElementType;
+  iconAnim: string;
   enabled?: (c: Client) => boolean;
   badgeKey?: ActionItem["type"];
   external?: boolean;
@@ -28,16 +29,16 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "", icon: Home },
-  { label: "Tasks", href: "/tasks", icon: ListTodo, enabled: (c) => !!c.clickup_list_id },
-  { label: "Content", href: "", icon: CheckSquare, enabled: (c) => !!c.statusbrew_url, badgeKey: "content_approval", external: true, externalHref: (c) => c.statusbrew_url! },
-  { label: "Performance", href: "/performance", icon: TrendingUp, enabled: (c) => !!c.performance_planner_url, badgeKey: "performance_planner" },
-  { label: "Creative", href: "/creative", icon: Palette, enabled: (c) => !!c.figma_url, badgeKey: "creative_review" },
-  { label: "Strategy", href: "/strategy", icon: FileText, enabled: (c) => !!c.strategy_pdf_url },
-  { label: "Reporting", href: "/reporting", icon: BarChart3, enabled: (c) => !!c.gomarble_url },
-  { label: "Files", href: "/files", icon: FolderOpen, enabled: (c) => !!c.google_drive_folder_id },
-  { label: "Invoices", href: "/invoices", icon: Receipt, enabled: (c) => !!c.xero_invoice_url, badgeKey: "invoice" },
-  { label: "Meetings", href: "/meetings", icon: Video, enabled: (c) => !!c.fireflies_enabled },
+  { label: "Home",        href: "",            icon: Home,        iconAnim: "icon-bounce" },
+  { label: "Tasks",       href: "/tasks",      icon: ListTodo,    iconAnim: "icon-slide-right", enabled: (c) => !!c.clickup_list_id },
+  { label: "Content",     href: "",            icon: CheckSquare, iconAnim: "icon-pop",         enabled: (c) => !!c.statusbrew_url, badgeKey: "content_approval", external: true, externalHref: (c) => c.statusbrew_url! },
+  { label: "Performance", href: "/performance",icon: TrendingUp,  iconAnim: "icon-slide-up",    enabled: (c) => !!c.performance_planner_url, badgeKey: "performance_planner" },
+  { label: "Creative",    href: "/creative",   icon: Palette,     iconAnim: "icon-spin",        enabled: (c) => !!c.figma_url, badgeKey: "creative_review" },
+  { label: "Strategy",    href: "/strategy",   icon: FileText,    iconAnim: "icon-slide-up",    enabled: (c) => !!c.strategy_pdf_url },
+  { label: "Reporting",   href: "/reporting",  icon: BarChart3,   iconAnim: "icon-grow",        enabled: (c) => !!(c.gomarble_url) },
+  { label: "Files",       href: "/files",      icon: FolderOpen,  iconAnim: "icon-pop",         enabled: (c) => !!c.google_drive_folder_id },
+  { label: "Invoices",    href: "/invoices",   icon: Receipt,     iconAnim: "icon-print",       enabled: (c) => !!c.xero_invoice_url, badgeKey: "invoice" },
+  { label: "Meetings",    href: "/meetings",   icon: Video,       iconAnim: "icon-pulse",       enabled: (c) => !!c.fireflies_enabled },
 ];
 
 export default function PortalSidebar({
@@ -97,13 +98,17 @@ export default function PortalSidebar({
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
+                "group flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
                   ? "bg-white text-black font-semibold shadow-sm"
                   : "text-black/70 hover:bg-white/70 hover:text-black font-medium"
               )}
             >
-              <Icon size={15} strokeWidth={1.8} className="shrink-0 text-black/50" />
+              <Icon
+                size={15}
+                strokeWidth={1.8}
+                className={cn("shrink-0 text-black/50 icon-anim", item.iconAnim)}
+              />
               <span className="flex-1">{item.label}</span>
               {badgeCount > 0 && (
                 <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-black text-white text-[10px] font-bold px-1">

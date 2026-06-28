@@ -25,3 +25,69 @@ body {
   color: #121212;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Sidebar icon hover animations */
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-4px); }
+  65% { transform: translateY(-2px); }
+}
+@keyframes icon-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes icon-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-14deg); }
+  60% { transform: rotate(14deg); }
+  80% { transform: rotate(-6deg); }
+}
+@keyframes icon-slide-up {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-4px); }
+  70% { transform: translateY(-2px); }
+}
+@keyframes icon-slide-right {
+  0%, 100% { transform: translateX(0); }
+  40% { transform: translateX(4px); }
+  70% { transform: translateX(2px); }
+}
+@keyframes icon-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  40% { transform: scale(1.25); opacity: 0.85; }
+  70% { transform: scale(1.1); opacity: 0.9; }
+}
+@keyframes icon-grow {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.2); }
+}
+@keyframes icon-print {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(3px); }
+  70% { transform: translateY(1px); }
+}
+@keyframes icon-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.2); }
+  65% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.icon-anim {
+  animation-duration: 0.45s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+  animation-play-state: paused;
+}
+.group:hover .icon-anim { animation-play-state: running; }
+
+.icon-bounce     { animation-name: icon-bounce; }
+.icon-spin       { animation-name: icon-spin; animation-duration: 0.4s; animation-timing-function: ease-in-out; }
+.icon-wiggle     { animation-name: icon-wiggle; animation-duration: 0.5s; }
+.icon-slide-up   { animation-name: icon-slide-up; }
+.icon-slide-right{ animation-name: icon-slide-right; }
+.icon-pulse      { animation-name: icon-pulse; animation-duration: 0.5s; }
+.icon-grow       { animation-name: icon-grow; }
+.icon-print      { animation-name: icon-print; }
+.icon-pop        { animation-name: icon-pop; animation-duration: 0.35s; }
