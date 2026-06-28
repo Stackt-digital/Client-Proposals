@@ -11,7 +11,11 @@ export default async function TasksPage({ params }: { params: Promise<{ token: s
 
   if (!client || !client.clickup_list_id) notFound();
 
-  const embedUrl = `https://sharing.clickup.com/embed/${client.clickup_list_id}/l/list`;
+  // Accept either a full sharing URL or just the ID
+  const raw = client.clickup_list_id;
+  const embedUrl = raw.startsWith("http")
+    ? raw.replace("sharing.clickup.com/", "sharing.clickup.com/embed/")
+    : `https://sharing.clickup.com/embed/${raw}/l/list`;
 
   return (
     <main className="flex-1 flex flex-col">
