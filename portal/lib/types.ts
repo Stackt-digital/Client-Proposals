@@ -43,6 +43,15 @@ export interface Client {
   created_at: string;
 }
 
+export interface ClientReport {
+  id: string;
+  client_id: string;
+  title: string;
+  url: string;
+  report_date?: string;
+  created_at: string;
+}
+
 export interface PortalData {
   client: Client;
   actions: ActionItem[];

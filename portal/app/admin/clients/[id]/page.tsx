@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { Client } from "@/lib/types";
+import { Client, ClientReport } from "@/lib/types";
 import ClientForm from "@/components/admin/ClientForm";
 import ActionItemManager from "@/components/admin/ActionItemManager";
+import ReportsManager from "@/components/admin/ReportsManager";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { headers } from "next/headers";
@@ -18,6 +19,12 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
     .select("*")
     .eq("client_id", id)
     .order("created_at", { ascending: false });
+
+  const { data: reports } = await supabase
+    .from("client_reports")
+    .select("*")
+    .eq("client_id", id)
+    .order("report_date", { ascending: false });
 
   const headersList = await headers();
   const host = headersList.get("host") ?? "localhost:3000";
@@ -62,6 +69,13 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
         <div>
           <h2 className="text-base font-semibold text-brand-black mb-4">Action Items</h2>
           <ActionItemManager clientId={id} actions={(actions ?? []) as import("@/lib/types").ActionItem[]} hasClientEmail={!!(client as Client).client_email} />
+        </div>
+
+        {/* Historic reports */}
+        <div>
+          <h2 className="text-base font-semibold text-brand-black mb-1">Historic Reports</h2>
+          <p className="text-xs text-gray-500 mb-4">Add past reports as Google Drive or PDF links — they appear in the client&apos;s Reporting section.</p>
+          <ReportsManager clientId={id} reports={(reports ?? []) as ClientReport[]} />
         </div>
       </div>
     </div>
