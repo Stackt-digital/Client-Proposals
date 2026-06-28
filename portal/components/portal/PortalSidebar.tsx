@@ -48,22 +48,24 @@ export default function PortalSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="w-56 shrink-0 bg-brand-sky flex flex-col min-h-screen">
+    <aside className="w-52 shrink-0 flex flex-col min-h-screen border-r border-gray-200" style={{ backgroundColor: "#EAFCFF" }}>
       {/* Logo */}
-      <div className="px-5 py-6 border-b border-brand-teal/20">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-brand-dark rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold font-mono">S</span>
+      <div className="px-5 pt-6 pb-5">
+        {client.logo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={client.logo_url} alt="Stackt" className="h-7 w-auto object-contain" />
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-md bg-brand-dark flex items-center justify-center shrink-0">
+              <span className="text-white text-[11px] font-bold tracking-tight">S</span>
+            </div>
+            <span className="text-sm font-semibold text-brand-dark tracking-wide">stackt</span>
           </div>
-          <div>
-            <p className="text-xs font-semibold text-brand-dark uppercase tracking-widest">stackt</p>
-            <p className="text-[10px] text-brand-dark/60 truncate max-w-[100px]">{client.name}</p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 px-3 space-y-0.5">
+      <nav className="flex-1 px-3 pb-4 space-y-0.5">
         {navItems.map((item) => {
           if (item.enabled && !item.enabled(client)) return null;
 
@@ -71,7 +73,10 @@ export default function PortalSidebar({
             ? item.externalHref(client)
             : `${basePath}${item.href}`;
 
-          const isActive = !item.external && (pathname === `${basePath}${item.href}` || (item.href === "" && pathname === basePath));
+          const isActive = !item.external && (
+            pathname === `${basePath}${item.href}` ||
+            (item.href === "" && pathname === basePath)
+          );
           const Icon = item.icon;
           const badgeCount = item.badgeKey ? (pendingCounts?.[item.badgeKey] ?? 0) : 0;
 
@@ -82,19 +87,16 @@ export default function PortalSidebar({
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
-                  ? "bg-brand-dark text-white"
-                  : "text-brand-dark/70 hover:bg-brand-dark/10 hover:text-brand-dark"
+                  ? "bg-white text-brand-dark font-semibold shadow-sm"
+                  : "text-gray-600 hover:bg-white/60 hover:text-brand-dark font-medium"
               )}
             >
-              <Icon size={16} strokeWidth={1.8} className="shrink-0" />
+              <Icon size={15} strokeWidth={1.8} className="shrink-0" />
               <span className="flex-1">{item.label}</span>
               {badgeCount > 0 && (
-                <span className={cn(
-                  "inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-bold px-1",
-                  isActive ? "bg-white text-brand-dark" : "bg-brand-dark text-white"
-                )}>
+                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-brand-dark text-white text-[10px] font-bold px-1">
                   {badgeCount}
                 </span>
               )}
@@ -104,10 +106,9 @@ export default function PortalSidebar({
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-brand-teal/20">
-        <p className="text-[10px] text-brand-dark/40 px-3">
-          Powered by{" "}
-          <span className="font-semibold text-brand-dark/60">stackt</span>
+      <div className="px-5 py-4 border-t border-black/5">
+        <p className="text-[10px] text-gray-400">
+          Powered by <span className="font-semibold text-gray-500">stackt</span>
         </p>
       </div>
     </aside>
