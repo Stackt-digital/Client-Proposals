@@ -328,6 +328,83 @@ const WE_CSS = `
     letter-spacing: 0.1em;
     color: var(--tertiary);
   }
+
+  /* ── Tablet ── */
+  @media (max-width: 900px) {
+    .fp-we {
+      padding: 72px 48px 64px;
+    }
+    .fp-we-phones {
+      gap: 20px;
+    }
+    .fp-we-phone-frame {
+      width: 200px;
+      height: 433px;
+      border-radius: 36px;
+    }
+    .fp-we-phone-frame::before {
+      top: 68px;
+      height: 24px;
+      box-shadow: 0 34px 0 #2c2c2c, 0 63px 0 #2c2c2c;
+    }
+    .fp-we-phone-frame::after {
+      top: 100px;
+      height: 48px;
+    }
+    .fp-we-phone-screen {
+      border-radius: 26px;
+    }
+    .fp-we-phone-island {
+      width: 64px;
+      height: 20px;
+      border-radius: 10px;
+    }
+    .fp-we-phone-indicator {
+      width: 70px;
+    }
+    .fp-we-phone-col--mid {
+      transform: translateY(-24px);
+    }
+    .fp-we-grid--3 { grid-template-columns: repeat(2, 1fr); }
+    .fp-we-metrics-header {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 600px) {
+    .fp-we {
+      padding: 56px 24px 48px;
+    }
+    .fp-we-phones {
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    .fp-we-phone-col--mid {
+      transform: none;
+    }
+    .fp-we-phone-frame {
+      width: 240px;
+      height: 520px;
+      border-radius: 40px;
+    }
+    .fp-we-phone-frame::before {
+      top: 82px;
+      height: 28px;
+      box-shadow: 0 40px 0 #2c2c2c, 0 74px 0 #2c2c2c;
+    }
+    .fp-we-phone-frame::after {
+      top: 120px;
+      height: 55px;
+    }
+    .fp-we-phone-screen {
+      border-radius: 30px;
+    }
+    .fp-we-grid--2,
+    .fp-we-grid--3 { grid-template-columns: 1fr; }
+  }
 `
 
 // ─── URL → embed URL ──────────────────────────────────────────────────────────
