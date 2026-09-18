@@ -70,7 +70,7 @@ const TEAM_CSS = `
     grid-template-columns: 1fr 1fr;
     gap: 64px;
     margin-top: 72px;
-    align-items: start;
+    align-items: center;
   }
 
   .fp-team-cards {
